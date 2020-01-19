@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace NeonatalPhysiologyEngine.Models
+namespace NeonatalPhysiologyEngine
 {
-    class Valve
+    public class Valve
     {
     }
 }
