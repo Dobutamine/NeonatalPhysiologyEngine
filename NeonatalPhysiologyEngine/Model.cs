@@ -30,10 +30,11 @@ namespace NeonatalPhysiologyEngine
         public Model(string filename = "")
         {
             // instantiate a model interface for this model instance which takes care of all communication with the outside world
-            modelInterface = new ModelInterface(this);
-
-            // first message stating the model instantiated
-            modelInterface.StatusMessage = $"Neonatal Physiology Engine version 1.0. {Environment.NewLine}";
+            modelInterface = new ModelInterface(this)
+            {
+                // first message stating the model instantiated
+                StatusMessage = $"Neonatal Physiology Engine version 1.0. {Environment.NewLine}"
+            };
 
             // load model if a filename is provided
             if (filename != "")
