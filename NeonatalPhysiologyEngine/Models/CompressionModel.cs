@@ -4,7 +4,15 @@ using System.Text;
 
 namespace NeonatalPhysiologyEngine.Models
 {
-    class CompressionModel
+    public class CompressionModel
     {
+        Model currentModel;
+
+        public CompressionModel(Model cm)
+        {
+            currentModel = cm;
+
+            currentModel.modelInterface.StatusMessage = $"Initialized the compressions model.";
+        }
     }
 }

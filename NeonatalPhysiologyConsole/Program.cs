@@ -10,7 +10,7 @@ namespace NeonatalPhysiologyConsole
         static void Main(string[] args)
         {
             string filepath = @"C:\Users\timan\Projects\NeonatalPhysiologyEngine\Model_definitions\normal_neonate.json";
-            
+
             TestModel = new Model();
             TestModel.LoadModel(filepath);
             TestModel.InitModel();

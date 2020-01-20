@@ -4,7 +4,15 @@ using System.Text;
 
 namespace NeonatalPhysiologyEngine.Models
 {
-    class ECMOModel
+    public class ECMOModel
     {
+        Model currentModel;
+
+        public ECMOModel(Model cm)
+        {
+            currentModel = cm;
+
+            currentModel.modelInterface.StatusMessage = $"Initialized the ECMO model.";
+        }
     }
 }

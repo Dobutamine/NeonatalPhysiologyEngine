@@ -4,7 +4,15 @@ using System.Text;
 
 namespace NeonatalPhysiologyEngine.Models
 {
-    class DrugModel
+    public class DrugModel
     {
+        Model currentModel;
+
+        public DrugModel(Model cm)
+        {
+            currentModel = cm;
+
+            currentModel.modelInterface.StatusMessage = $"Initialized the drug model.";
+        }
     }
 }

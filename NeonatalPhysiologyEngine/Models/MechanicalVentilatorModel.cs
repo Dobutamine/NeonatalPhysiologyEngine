@@ -4,7 +4,16 @@ using System.Text;
 
 namespace NeonatalPhysiologyEngine.Models
 {
-    class MechanicalVentilatorModel
+    public class MechanicalVentilatorModel
     {
+        Model currentModel;
+
+        public MechanicalVentilatorModel(Model cm)
+        {
+            currentModel = cm;
+
+            currentModel.modelInterface.StatusMessage = $"Initialized the mechanical ventilator model.";
+        }
+
     }
 }

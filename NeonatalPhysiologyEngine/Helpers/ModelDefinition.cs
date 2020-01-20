@@ -7,6 +7,8 @@ namespace NeonatalPhysiologyEngine
 {
     public class ModelDefinition
     {
+        public string __class__ { get; set; }
+        public string __module__ { get; set; }
         public string name { get; set; }
         public float weight { get; set; }
         public float modeling_interval { get; set; }

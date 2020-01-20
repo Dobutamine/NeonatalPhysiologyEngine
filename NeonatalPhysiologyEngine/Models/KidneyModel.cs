@@ -4,7 +4,15 @@ using System.Text;
 
 namespace NeonatalPhysiologyEngine.Models
 {
-    class KidneyModel
+    public class KidneyModel
     {
+        Model currentModel;
+
+        public KidneyModel(Model cm)
+        {
+            currentModel = cm;
+
+            currentModel.modelInterface.StatusMessage = $"Initialized the kidney model.";
+        }
     }
 }

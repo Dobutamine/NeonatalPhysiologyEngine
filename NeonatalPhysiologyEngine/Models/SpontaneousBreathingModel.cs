@@ -4,7 +4,15 @@ using System.Text;
 
 namespace NeonatalPhysiologyEngine.Models
 {
-    class SpontaneousBreathingModel
+    public class SpontaneousBreathingModel
     {
+        Model currentModel;
+
+        public SpontaneousBreathingModel(Model cm)
+        {
+            currentModel = cm;
+
+            currentModel.modelInterface.StatusMessage = $"Initialized the spontanenous breathing model.";
+        }
     }
 }

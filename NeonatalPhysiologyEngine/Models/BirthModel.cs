@@ -4,7 +4,15 @@ using System.Text;
 
 namespace NeonatalPhysiologyEngine.Models
 {
-    class BirthModel
+    public class BirthModel
     {
+        Model currentModel;
+
+        public BirthModel(Model cm)
+        {
+            currentModel = cm;
+
+            currentModel.modelInterface.StatusMessage = $"Initialized the birth model.";
+        }
     }
 }

@@ -4,7 +4,15 @@ using System.Text;
 
 namespace NeonatalPhysiologyEngine.Models
 {
-    class LiverModel
+    public class LiverModel
     {
+        Model currentModel;
+
+        public LiverModel(Model cm)
+        {
+            currentModel = cm;
+
+            currentModel.modelInterface.StatusMessage = $"Initialized the liver model.";
+        }
     }
 }

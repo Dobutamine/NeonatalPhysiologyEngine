@@ -4,7 +4,15 @@ using System.Text;
 
 namespace NeonatalPhysiologyEngine.Models
 {
-    class AVInteractionModel
+    public class AVInteractionModel
     {
+        Model currentModel;
+
+        public AVInteractionModel(Model cm)
+        {
+            currentModel = cm;
+
+            currentModel.modelInterface.StatusMessage = $"Initialized the atrio-ventricular interaction model.";
+        }
     }
 }

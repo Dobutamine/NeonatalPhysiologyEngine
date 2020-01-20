@@ -4,7 +4,15 @@ using System.Text;
 
 namespace NeonatalPhysiologyEngine.Models
 {
-    class ECGModel
+    public class ECGModel
     {
+        Model currentModel;
+
+        public ECGModel(Model cm)
+        {
+            currentModel = cm;
+
+            currentModel.modelInterface.StatusMessage = $"Initialized the ECG model.";
+        }
     }
 }

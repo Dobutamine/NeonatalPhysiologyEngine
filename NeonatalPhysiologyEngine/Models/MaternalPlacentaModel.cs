@@ -4,7 +4,15 @@ using System.Text;
 
 namespace NeonatalPhysiologyEngine.Models
 {
-    class MaternalPlacentaModel
+    public class MaternalPlacentaModel
     {
+        Model currentModel;
+
+        public MaternalPlacentaModel(Model cm)
+        {
+            currentModel = cm;
+
+            currentModel.modelInterface.StatusMessage = $"Initialized the maternal placenta model.";
+        }
     }
 }

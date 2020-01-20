@@ -4,7 +4,15 @@ using System.Text;
 
 namespace NeonatalPhysiologyEngine.Models
 {
-    class AcidBaseModel
+    public class AcidBaseModel
     {
+        Model currentModel;
+
+        public AcidBaseModel(Model cm)
+        {
+            currentModel = cm;
+
+            currentModel.modelInterface.StatusMessage = $"Initialized the acid-base model.";
+        }
     }
 }

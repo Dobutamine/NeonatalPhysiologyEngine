@@ -20,12 +20,44 @@ namespace NeonatalPhysiologyEngine.IO
                 WriteIndented = true
             };
 
-            var jsonString = File.ReadAllText(filename);
-            var jsonModel = JsonSerializer.Deserialize<ModelDefinition>(jsonString, options);
+            try
+            {
+                var jsonString = File.ReadAllText(filename);
+                var jsonModel = JsonSerializer.Deserialize<ModelDefinition>(jsonString, options);
 
-            return jsonModel;
-            
+                return jsonModel;
+
+            } catch (Exception ex)
+            {
+                return null;
+            }
             
         }
+
+        public static bool ExportPatient(string filename, ModelDefinition currentModel)
+        {
+
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+
+            try
+            {
+                var modelJson = JsonSerializer.Serialize(currentModel, options);
+                File.WriteAllText(filename, modelJson);
+                return true;
+
+            } catch (Exception ex)
+            {
+                return false;
+            }
+           
+
+           
+
+
+        }
+
     }
 }

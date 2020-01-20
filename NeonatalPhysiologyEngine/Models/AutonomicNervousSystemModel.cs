@@ -4,7 +4,15 @@ using System.Text;
 
 namespace NeonatalPhysiologyEngine.Models
 {
-    class AutonomicNervousSystemModel
+    public class AutonomicNervousSystemModel
     {
+        Model currentModel;
+
+        public AutonomicNervousSystemModel(Model cm)
+        {
+            currentModel = cm;
+
+            currentModel.modelInterface.StatusMessage = $"Initialized the autonomic nervous system model.";
+        }
     }
 }
