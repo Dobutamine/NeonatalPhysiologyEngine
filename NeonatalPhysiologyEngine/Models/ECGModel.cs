@@ -27,7 +27,7 @@ namespace NeonatalPhysiologyEngine.Models
 
         bool qrsRunning = false;
         double qrsCounter = 0;
-        double qrsWaveSignalCounter = 0;
+        int qrsWaveSignalCounter = 0;
 
         bool ventricularActivation = false;
         bool atrialActivation = false;
@@ -106,7 +106,107 @@ namespace NeonatalPhysiologyEngine.Models
             qtc = CalculateQTCTime();
 
             // check whether the qt time is finished.
+            if (qtCounter > qtc && qtRunning)
+            {
+                // reset the qt counter
+                qtCounter = 0;
+                // switch off the qt is running flag
+                qtRunning = false;
+            }
 
+            // check whether the atria should be activated
+            if (atrialActivation)
+            {
+                currentModel.modelDefinition.ecg["ncc_atrial"] = 0;
+                atrialActivation = false;
+            }
+
+            // check whether the ventricles should be activated
+            if (ventricularActivation)
+            {
+                currentModel.modelDefinition.ecg["ncc_ventricular"] = 0;
+                ventricularActivation = false;
+            }
+
+            // increase the counters and build the ecg signal
+            sinusNodeCounter += currentModel.modelDefinition.modeling_interval;
+
+            if (pqRunning)
+            {
+                pqCounter += currentModel.modelDefinition.modeling_interval;
+                BuildDynamicPWave();
+                pWaveSignalCounter += 1;
+            } else
+            {
+                pWaveSignalCounter = 0;
+            }
+            if (qrsRunning)
+            {
+                qrsCounter += currentModel.modelDefinition.modeling_interval;
+                BuildQRSWave();
+                qrsWaveSignalCounter += 1;
+            } else
+            {
+                qrsWaveSignalCounter = 0;
+            }
+            if (qtRunning)
+            {
+                qtCounter += currentModel.modelDefinition.modeling_interval;
+                BuildDynamicTWave();
+                tWaveSignalCounter += 1;
+            }
+            else
+            {
+                tWaveSignalCounter = 0;
+            }
+
+            if (pqRunning == false && qrsRunning == false && qtRunning == false)
+            {
+                ecgSignal = 0;
+            }
+
+            currentModel.modelDefinition.ecg["ecg_signal"] = ecgSignal;
+        }
+
+
+        void BuildDynamicPWave()
+        {
+            //  get the characteristics from the model config class
+            double duration = currentModel.modelDefinition.ecg["pq_time"];
+            double amp_p = currentModel.modelDefinition.ecg["amp_p"];
+            double width_p = currentModel.modelDefinition.ecg["width_p"];
+            double skew_p = currentModel.modelDefinition.ecg["skew_p"];
+
+            double new_p_signal = amp_p * Math.Exp(-width_p * (Math.Pow(pqCounter - duration / skew_p, 2) / Math.Pow(duration, 2)));
+            double delta_p = new_p_signal - prevPSignal;
+            ecgSignal += delta_p;
+            prevPSignal = new_p_signal;
+
+        }
+
+        void BuildQRSWave()
+        {
+            if (qrsWaveSignalCounter < normalQRSWave.Length)
+            {
+                ecgSignal += normalQRSWave[qrsWaveSignalCounter];
+            } else
+            {
+                qrsWaveSignalCounter = 0;
+            }
+        }
+
+        void BuildDynamicTWave()
+        {
+            //  get the characteristics from the model config class
+            double duration = qtc;
+            double amp_t = currentModel.modelDefinition.ecg["amp_t"];
+            double width_t = currentModel.modelDefinition.ecg["width_t"];
+            double skew_t = currentModel.modelDefinition.ecg["skew_t"];
+
+            double new_t_signal = amp_t * Math.Exp(-width_t * (Math.Pow(pqCounter - duration / skew_t, 2) / Math.Pow(duration, 2)));
+            double delta_t = new_t_signal - prevTSignal;
+            ecgSignal += delta_t;
+            prevTSignal = new_t_signal;
 
         }
 

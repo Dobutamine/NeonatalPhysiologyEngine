@@ -1,6 +1,8 @@
 ﻿using NeonatalPhysiologyEngine.IO;
 using NeonatalPhysiologyEngine.Models;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace NeonatalPhysiologyEngine
 {
@@ -204,14 +206,55 @@ namespace NeonatalPhysiologyEngine
 
         }
 
-        public void CalculateModel(int duration)
+        public void CalculateModel(int duration = 10)
         {
+            // declare a stopwatch to measure the execution times
+            Stopwatch s_modelCycle = new Stopwatch();
+
+            // declare a list holding all execution times to measure the average execution time
+            List<double> executionTimes = new List<double>();
+
+            // duration in seconds
+            int noNeededSteps = (int)(duration / modelDefinition.modeling_interval);
+
+            // print a status message
+            modelInterface.StatusMessage = $"Calculating model for {duration} seconds in {noNeededSteps} steps.";
+
+            // calculate the model steps
+            for (int i = 0; i < noNeededSteps; i++)
+            {
+                // start the stopwatch for measuring the model cycle executing time
+                s_modelCycle.Start();
+
+                // do the model cycle steps
+                ModelCycle();
+
+                // report the execution time of the model cycle
+                executionTimes.Add(s_modelCycle.ElapsedMilliseconds);
+
+                // stop the stopwatch 
+                s_modelCycle.Reset();
+            }
+
+            // report performance 
 
         }
 
         void ModelCycle()
         {
+            // calculate the number of frames
+            int frames = (int)(modelDefinition.modeling_interval / modelDefinition.modeling_stepsize);
 
+            // model cycles with normal step size which don'require high resolution (saves CPU time)
+            ecg.ModelCycle();
+
+            // model cycles with smaller step size for higher resolution results
+            for (int i = 0; i < frames; i++)
+            {
+                // update the gasexchange blocks
+
+            }
+           
         }
 
     }
