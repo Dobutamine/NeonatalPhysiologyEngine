@@ -7,8 +7,8 @@ namespace NeonatalPhysiologyEngine
     public class GasCompartment
     {
         public string name { get; set; }
-        public bool is_enabled { get; set; }
-        public bool has_fixed_composition { get; set; }
+        public int is_enabled { get; set; }
+        public int has_fixed_composition { get; set; }
         public double vol_unstressed { get; set; }
         public double vol_unstressed_baseline { get; set; }
         public double vol_current { get; set; }
@@ -50,7 +50,8 @@ namespace NeonatalPhysiologyEngine
 
         Model currentModel;
 
-        public GasCompartment()
+
+        public void InitGasCompartment(Model cm)
         {
             pres_current = 0;
             container_pressure = 0;
@@ -59,12 +60,7 @@ namespace NeonatalPhysiologyEngine
             temp = 37;
             pres_current = CalculatePressure();
             CalculateComposition();
-            
 
-        }
-
-        public void InitGasCompartment(Model cm)
-        {
             currentModel = cm;
 
             Console.WriteLine("Initialized gas compartment {0}.", name);
@@ -72,7 +68,7 @@ namespace NeonatalPhysiologyEngine
 
         public void UpdateCompartment(double atmospheric_pressure)
         {
-            if (is_enabled)
+            if (is_enabled == 1)
             {
                 patm = atmospheric_pressure;
                 pres_current = CalculatePressure();
@@ -81,7 +77,7 @@ namespace NeonatalPhysiologyEngine
 
         public void GasIn(double dvol, GasCompartment compFrom)
         {
-            if (has_fixed_composition == false)
+            if (has_fixed_composition == 0)
             {
                 // change the volume
                 vol_current += dvol;
@@ -129,7 +125,7 @@ namespace NeonatalPhysiologyEngine
 
         public void GasOut(double dvol)
         {
-            if (has_fixed_composition == false)
+            if (has_fixed_composition == 0)
             {
                 vol_current -= dvol;
                 if (vol_current < 0)

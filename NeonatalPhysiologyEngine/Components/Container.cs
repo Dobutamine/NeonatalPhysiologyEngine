@@ -7,7 +7,7 @@ namespace NeonatalPhysiologyEngine
     public class Container
     {
         public string name { get; set; }
-        public bool is_enabled { get; set; }
+        public int is_enabled { get; set; }
         public double vol_unstressed { get; set; }
         public double vol_unstressed_baseline { get; set; }
         public double vol_current { get; set; }
@@ -28,14 +28,12 @@ namespace NeonatalPhysiologyEngine
         List<GasCompartment> containedGasCompartments = new List<GasCompartment>();
         
 
-        public Container()
-        {
-            external_pressure = 0;
-            container_volume = 0;
-        }
 
         public void InitContainer(Model cm)
         {
+            external_pressure = 0;
+            container_volume = 0;
+
             currentModel = cm;
 
             string[] containedCompartmentNames = compartments.Split("_");
@@ -59,12 +57,12 @@ namespace NeonatalPhysiologyEngine
                 }
             }
 
-            Console.WriteLine("Initialized container {0} with compartments {1}",name,)
+            Console.WriteLine("Initialized container {0} with compartments {1}", name, compartments);
         }
 
         public void UpdateCompartment()
         {
-            if (is_enabled)
+            if (is_enabled == 1)
             {
                 // add the enclosed compartments volume to the volume of the container
                 container_volume = CalculateVolume();

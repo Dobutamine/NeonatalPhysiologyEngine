@@ -8,8 +8,8 @@ namespace NeonatalPhysiologyEngine
     {
         public string name { get; set; } = "";
         public string compartments { get; set; } = "";
-        public bool is_enabled { get; set; } = false;
-        public bool no_backflow { get; set; } = false;
+        public int is_enabled { get; set; } = 0;
+        public int no_backflow { get; set; } = 0;
         public double res_current { get; set; }
         public double res_forward_baseline { get; set; } = 10000;
         public double res_backward_baseline { get; set; } = 10000;
@@ -29,16 +29,14 @@ namespace NeonatalPhysiologyEngine
 
         Model currentModel;
 
-        public GasConnector()
+        public void InitGasConnector(Model cm)
         {
+
             // find the two gascompartment names which this connector connects
             string[] comps = compartments.Split("_");
             comp1_name = comps[0];
             comp2_name = comps[1];
-        }
 
-        public void InitGasConnector(Model cm)
-        {
             // store reference to the model
             currentModel = cm;
 
@@ -70,7 +68,7 @@ namespace NeonatalPhysiologyEngine
                 in_current = CalculateInductance();
 
                 // check whether the connector is enabled
-                if (is_enabled)
+                if (is_enabled == 1)
                 {
                     // find the flow direction
                     if (comp1.pres_current > comp2.pres_current)
@@ -87,7 +85,7 @@ namespace NeonatalPhysiologyEngine
                     else
                     {
                         // if no backflow is set then set the flow to zero
-                        if (no_backflow)
+                        if (no_backflow == 1)
                         {
                             current_flow = 0;
                             real_flow = 0;

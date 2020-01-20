@@ -8,7 +8,7 @@ namespace NeonatalPhysiologyEngine
     {
         public string name { get; set; }
         public string compartments { get; set; }
-        public bool is_enabled { get; set; }
+        public int is_enabled { get; set; }
         public double diff_o2 { get; set; }
         public double diff_co2 { get; set; }
 
@@ -20,15 +20,14 @@ namespace NeonatalPhysiologyEngine
 
         Model currentModel;
 
-        public GasExchanger()
+
+
+        public void InitializeExchanger(Model cm)
         {
             string[] comps = compartments.Split("_");
             comp_blood_name = comps[0];
             comp_gas_name = comps[1];
-        }
 
-        public void InitializeExchanger(Model cm)
-        {
             currentModel = cm;
 
             foreach(BloodCompartment blood_comp in currentModel.modelDefinition.blood_compartments)
@@ -60,7 +59,7 @@ namespace NeonatalPhysiologyEngine
             double flux_co2 = (comp_blood.pco2 * 7.50061683 - comp_gas.pco2) * diff_co2 * currentModel.modelDefinition.modeling_stepsize;
 
             // calculate the gas exchange. watch the units of the concetrations. The gas compartment is in mol/l and the blood compartment in mmol/l
-            if (comp_blood.is_enabled)
+            if (comp_blood.is_enabled == 1)
             {
                 double vol_current_l = comp_blood.vol_current / 1000.0;
 
@@ -84,7 +83,7 @@ namespace NeonatalPhysiologyEngine
                 }
             }
 
-            if (comp_gas.is_enabled)
+            if (comp_gas.is_enabled == 1)
             {
                 double vol_current_l = comp_gas.vol_current / 1000.0;
 

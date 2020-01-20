@@ -8,7 +8,7 @@ namespace NeonatalPhysiologyEngine
     {
         public string name { get; set; }
         public string compartments { get; set; }
-        public bool is_enabled { get; set; }
+        public int is_enabled { get; set; }
         public double diff_o2 { get; set; }
         public double diff_co2 { get; set; }
 
@@ -22,12 +22,6 @@ namespace NeonatalPhysiologyEngine
 
         Model currentModel;
 
-        public Diffusor()
-        {
-            string[] comps = compartments.Split("_");
-            comp1_name = comps[0];
-            comp2_name = comps[1];
-        }
 
         public void CalculateDiffusion()
         {
@@ -36,6 +30,10 @@ namespace NeonatalPhysiologyEngine
 
         public void InitializeDiffusor(Model cm)
         {
+            string[] comps = compartments.Split("_");
+            comp1_name = comps[0];
+            comp2_name = comps[1];
+
             currentModel = cm;
 
             foreach (BloodCompartment blood_comp in currentModel.modelDefinition.blood_compartments)

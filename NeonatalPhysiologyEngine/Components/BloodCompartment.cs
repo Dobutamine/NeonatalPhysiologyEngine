@@ -7,7 +7,7 @@ namespace NeonatalPhysiologyEngine
     public class BloodCompartment
     {
         public string name { get; set; }
-        public bool is_enabled { get; set; }
+        public int is_enabled { get; set; }
         public double vol_unstressed { get; set; }
         public double vol_unstressed_baseline { get; set; }
         public double vol_current { get; set; }
@@ -23,10 +23,12 @@ namespace NeonatalPhysiologyEngine
         public double el_max_volume { get; set; }
         public double el_k1 { get; set; }
         public double el_k2 { get; set; }
+
         public double fvatp { get; set; }
+        public double atp_factor { get; set; }
         public double to2 { get; set; }
         public double tco2 { get; set; }
-        public double atp_factor { get; set; }
+        
 
         public double ph { get; set; }
         public double po2 { get; set; }
@@ -45,7 +47,7 @@ namespace NeonatalPhysiologyEngine
 
         Model currentModel;
 
-        public BloodCompartment()
+        public void InitBloodCompartment(Model cm)
         {
             // initialize starting values
 
@@ -65,10 +67,6 @@ namespace NeonatalPhysiologyEngine
             dpg = 5.0;
             temp = 37.0;
 
-        }
-
-        public void InitBloodCompartment(Model cm)
-        {
             currentModel = cm;
 
             Console.WriteLine("Initialized blood compartment " + name);
@@ -76,7 +74,7 @@ namespace NeonatalPhysiologyEngine
 
         public void UpdateCompartment()
         {
-            if (is_enabled)
+            if (is_enabled == 1)
             {
                 EnergyBalance();
                 pres_current = CalculatePressure();

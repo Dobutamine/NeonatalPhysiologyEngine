@@ -4,7 +4,11 @@ using System.Text;
 
 namespace NeonatalPhysiologyEngine.IO
 {
-    class ModelInterface
+    public class ModelInterface
     {
+        public string statusMessage = "";
+
+
+
     }
 }

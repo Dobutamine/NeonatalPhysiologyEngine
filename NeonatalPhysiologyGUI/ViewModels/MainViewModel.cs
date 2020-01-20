@@ -14,11 +14,19 @@ namespace NeonatalPhysiologyGUI.ViewModels
 
         Model physiologyEngine;
 
+        NeonatalPhysiologyEngine.Model TestInstance;
+
+
         public MainViewModel(double _screenx, double _screeny, double _dpi_scale)
         {
             screenx = _screenx;
             screeny = _screeny;
             dpi = _dpi_scale;
+
+            TestInstance = new NeonatalPhysiologyEngine.Model();
+
+            Console.WriteLine("TESTSTSTSTS");
+
 
         }
     }
