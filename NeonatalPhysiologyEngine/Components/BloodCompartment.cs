@@ -69,7 +69,7 @@ namespace NeonatalPhysiologyEngine
 
             currentModel = cm;
 
-            Console.WriteLine("Initialized blood compartment " + name);
+            currentModel.modelInterface.StatusMessage = $"Initialized blood compartment {name}.";
         }
 
         public void UpdateCompartment()

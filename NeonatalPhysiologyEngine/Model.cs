@@ -6,17 +6,19 @@ namespace NeonatalPhysiologyEngine
     public class Model
     {
         public ModelDefinition modelDefinition;
+        public ModelInterface modelInterface;
 
         public Model()
         {
-            Console.WriteLine("Neonatal Physiology Engine version 1.0.");
-            Console.WriteLine("");
+            // instantiate a model interface for this model instance which takes care of all communication with the outside world
+            modelInterface = new ModelInterface(this);
+            modelInterface.StatusMessage = $"Neonatal Physiology Engine version 1.0. {Environment.NewLine}";
         }
 
         public void LoadModel(string filename)
         {
             modelDefinition = JSONIO.ImportPatient(filename);
-            Console.WriteLine("Imported patient {0} ", filename);
+            modelInterface.StatusMessage = $"Imported patient {filename}. {Environment.NewLine}";
         }
 
         public void SaveModel(string filename)
@@ -26,73 +28,56 @@ namespace NeonatalPhysiologyEngine
 
         public void InitModel()
         {
-            Console.WriteLine("");
-            Console.WriteLine("Initializing blood compartments.");
-            Console.WriteLine("");
+            
+            modelInterface.StatusMessage = $"{Environment.NewLine}Initializing blood compartments.{Environment.NewLine}";
             foreach(BloodCompartment bloodComp in modelDefinition.blood_compartments)
             {
                 bloodComp.InitBloodCompartment(this);
             }
-            
-            Console.WriteLine("");
-            Console.WriteLine("Initializing blood compartment connectors.");
-            Console.WriteLine("");
+
+            modelInterface.StatusMessage = $"{Environment.NewLine}Initializing blood compartment connectors.{Environment.NewLine}";
             foreach (BloodConnector bloodCon in modelDefinition.blood_connectors)
             {
                 bloodCon.InitBloodConnector(this);
             }
-            
-            Console.WriteLine("");
-            Console.WriteLine("Initializing valves.");
-            Console.WriteLine("");
+
+            modelInterface.StatusMessage = $"{Environment.NewLine}Initializing valves.{Environment.NewLine}";
             foreach (Valve valve in modelDefinition.valves)
             {
                 valve.InitValve(this);
             }
-            
-            Console.WriteLine("");
-            Console.WriteLine("Initializing shunts.");
-            Console.WriteLine("");
+
+            modelInterface.StatusMessage = $"{Environment.NewLine}Initializing shunts.{Environment.NewLine}";
             foreach (Shunt shunt in modelDefinition.shunts)
             {
                 shunt.InitShunt(this);
             }
 
-            Console.WriteLine("");
-            Console.WriteLine("Initializing gas compartments.");
-            Console.WriteLine("");
+            modelInterface.StatusMessage = $"{Environment.NewLine}Initializing gas compartments.{Environment.NewLine}";
             foreach (GasCompartment gasComp in modelDefinition.gas_compartments)
             {
                 gasComp.InitGasCompartment(this);
             }
 
-            Console.WriteLine("");
-            Console.WriteLine("Initializing gas compartment connectors.");
-            Console.WriteLine("");
+            modelInterface.StatusMessage = $"{Environment.NewLine}Initializing gas compartment connectors.{Environment.NewLine}";
             foreach (GasConnector gasCon in modelDefinition.gas_connectors)
             {
                 gasCon.InitGasConnector(this);
             }
 
-            Console.WriteLine("");
-            Console.WriteLine("Initializing gasexchangers.");
-            Console.WriteLine("");
+            modelInterface.StatusMessage = $"{Environment.NewLine}Initializing gasexchangers.{Environment.NewLine}";
             foreach (GasExchanger gasExchanger in modelDefinition.exchangers)
             {
                 gasExchanger.InitializeExchanger(this);
             }
 
-            Console.WriteLine("");
-            Console.WriteLine("Initializing diffusors.");
-            Console.WriteLine("");
+            modelInterface.StatusMessage = $"{Environment.NewLine}Initializing diffusors.{Environment.NewLine}";
             foreach (Diffusor diffusor in modelDefinition.diffusors)
             {
                 diffusor.InitializeDiffusor(this);
             }
 
-            Console.WriteLine("");
-            Console.WriteLine("Initializing containers.");
-            Console.WriteLine("");
+            modelInterface.StatusMessage = $"{Environment.NewLine}Initializing containers.{Environment.NewLine}";
             foreach (Container container in modelDefinition.containers)
             {
                 container.InitContainer(this);

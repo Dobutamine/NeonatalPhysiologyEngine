@@ -15,9 +15,12 @@ namespace NeonatalPhysiologyConsole
             TestModel.LoadModel(filepath);
             TestModel.InitModel();
 
+            TestModel.modelInterface.PropertyChanged += ModelInterface_PropertyChanged;
+        }
 
-          
-            
+        private static void ModelInterface_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+
         }
     }
 }

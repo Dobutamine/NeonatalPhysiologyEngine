@@ -54,8 +54,7 @@ namespace NeonatalPhysiologyEngine
                 }
             }
 
-            Console.WriteLine("Initialized blood compartment connector {0} by connecting {1} to {2}", name, comp1_name, comp2_name);
-
+            currentModel.modelInterface.StatusMessage = $"Initialized blood compartment connector {name} by connecting {comp1.name} to {comp2.name}";
         }
 
         public void CalculateFlow()

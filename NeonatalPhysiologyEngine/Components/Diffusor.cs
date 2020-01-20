@@ -62,7 +62,7 @@ namespace NeonatalPhysiologyEngine
 
             }
 
-            Console.WriteLine("Initialized diffusion unit {0} : compartment {1} to compartment {2}", name, comp1_name, comp2_name);
+            currentModel.modelInterface.StatusMessage = $"Initialized diffusor {name} : compartment {comp1_name} to compartment {comp2_name}";
 
 
         }

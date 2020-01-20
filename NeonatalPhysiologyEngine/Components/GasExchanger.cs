@@ -46,7 +46,8 @@ namespace NeonatalPhysiologyEngine
                 }
             }
 
-            Console.WriteLine("Initialized gas exchange unit {0} : {1} to {2}", name, comp_blood.name, comp_gas.name);
+            currentModel.modelInterface.StatusMessage = $"Initialized gas exchange unit {name} : {comp_blood.name} to {comp_gas.name}";
+
 
         }
 

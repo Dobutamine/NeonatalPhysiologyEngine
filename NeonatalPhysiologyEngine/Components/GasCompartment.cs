@@ -63,7 +63,7 @@ namespace NeonatalPhysiologyEngine
 
             currentModel = cm;
 
-            Console.WriteLine("Initialized gas compartment {0}.", name);
+            currentModel.modelInterface.StatusMessage = $"Initialized gas compartment {name}.";
         }
 
         public void UpdateCompartment(double atmospheric_pressure)

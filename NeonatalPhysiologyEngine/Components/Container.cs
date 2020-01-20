@@ -57,7 +57,8 @@ namespace NeonatalPhysiologyEngine
                 }
             }
 
-            Console.WriteLine("Initialized container {0} with compartments {1}", name, compartments);
+            currentModel.modelInterface.StatusMessage = $"Initialized container {name} with compartments {compartments}";
+
         }
 
         public void UpdateCompartment()
