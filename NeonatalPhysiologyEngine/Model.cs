@@ -8,7 +8,6 @@ namespace NeonatalPhysiologyEngine
     {
         public ModelDefinition modelDefinition;
         public ModelInterface modelInterface;
-
         public ECGModel ecg;
         public AutonomicNervousSystemModel ans;
         public SpontaneousBreathingModel breathing;
@@ -28,12 +27,20 @@ namespace NeonatalPhysiologyEngine
         public CompressionModel compressions;
 
 
-        public Model()
+        public Model(string filename = "")
         {
             // instantiate a model interface for this model instance which takes care of all communication with the outside world
             modelInterface = new ModelInterface(this);
 
+            // first message stating the model instantiated
             modelInterface.StatusMessage = $"Neonatal Physiology Engine version 1.0. {Environment.NewLine}";
+
+            // load model if a filename is provided
+            if (filename != "")
+            {
+                LoadModel(filename);
+            }
+
         }
 
         public void LoadModel(string filename)
@@ -42,6 +49,10 @@ namespace NeonatalPhysiologyEngine
             if (modelDefinition != null)
             {
                 modelInterface.StatusMessage = $"Imported patient {filename}. {Environment.NewLine}";
+
+                // initialize the loaded model
+                InitModel();
+
             } else
             {
                 modelInterface.StatusMessage = $"Failed to import patient {filename}. {Environment.NewLine}";
@@ -66,61 +77,64 @@ namespace NeonatalPhysiologyEngine
             // initialize all the model components and update the status message in de modelinterface class for notification purposes
             if (modelDefinition != null)
             {
-                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing blood compartments.{Environment.NewLine}";
+                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing model components.";
+
+                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing blood compartments.";
                 foreach (BloodCompartment bloodComp in modelDefinition.blood_compartments)
                 {
                     bloodComp.InitBloodCompartment(this);
                 }
 
-                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing blood compartment connectors.{Environment.NewLine}";
+                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing blood compartment connectors.";
                 foreach (BloodConnector bloodCon in modelDefinition.blood_connectors)
                 {
                     bloodCon.InitBloodConnector(this);
                 }
 
-                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing valves.{Environment.NewLine}";
+                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing valves.";
                 foreach (Valve valve in modelDefinition.valves)
                 {
                     valve.InitValve(this);
                 }
 
-                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing shunts.{Environment.NewLine}";
+                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing shunts.";
                 foreach (Shunt shunt in modelDefinition.shunts)
                 {
                     shunt.InitShunt(this);
                 }
 
-                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing gas compartments.{Environment.NewLine}";
+                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing gas compartments.";
                 foreach (GasCompartment gasComp in modelDefinition.gas_compartments)
                 {
                     gasComp.InitGasCompartment(this);
                 }
 
-                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing gas compartment connectors.{Environment.NewLine}";
+                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing gas compartment connectors.";
                 foreach (GasConnector gasCon in modelDefinition.gas_connectors)
                 {
                     gasCon.InitGasConnector(this);
                 }
 
-                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing gasexchangers.{Environment.NewLine}";
+                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing gasexchangers.";
                 foreach (GasExchanger gasExchanger in modelDefinition.exchangers)
                 {
                     gasExchanger.InitializeExchanger(this);
                 }
 
-                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing diffusors.{Environment.NewLine}";
+                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing diffusors.";
                 foreach (Diffusor diffusor in modelDefinition.diffusors)
                 {
                     diffusor.InitializeDiffusor(this);
                 }
 
-                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing containers.{Environment.NewLine}";
+                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing containers.";
                 foreach (Container container in modelDefinition.containers)
                 {
                     container.InitContainer(this);
                 }
 
-                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing submodels.{Environment.NewLine}";
+                modelInterface.StatusMessage = $"{Environment.NewLine}Initializing submodels.";
+
                 // instantiate the ecg model
                 ecg = new ECGModel(this);
 
@@ -171,8 +185,6 @@ namespace NeonatalPhysiologyEngine
 
                 // instantiate the compressions model
                 compressions = new CompressionModel(this);
-
-
             }
             else
             {
