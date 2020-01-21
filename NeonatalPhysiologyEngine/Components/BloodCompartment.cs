@@ -34,6 +34,7 @@ namespace NeonatalPhysiologyEngine
         public double po2 { get; set; }
         public double pco2 { get; set; }
         public double hco3 { get; set; }
+        public double co3 { get; set; }
         public double be { get; set; }
         public double so2 { get; set; }
         public double co2 { get; set; }
@@ -44,6 +45,8 @@ namespace NeonatalPhysiologyEngine
         public double hemoglobin { get; set; }
         public double dpg { get; set; }
         public double temp { get; set; }
+        public double error_counter { get; set; }
+        public double prev_so2 { get; set; }
 
         Model currentModel;
 

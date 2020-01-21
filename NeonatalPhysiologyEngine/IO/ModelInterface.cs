@@ -45,11 +45,18 @@ namespace NeonatalPhysiologyEngine.IO
 
         }
 
+        public int MonitoringMode { get; set; } = 1; // 0 = off, 1 = hires, 2 = lores
+        
         Model currentModel;
 
         public ModelInterface(Model cm)
         {
             currentModel = cm;
+        }
+
+        public void UpdateHiResData()
+        {
+
         }
     }
 }

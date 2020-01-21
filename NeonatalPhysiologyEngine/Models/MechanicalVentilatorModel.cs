@@ -15,5 +15,10 @@ namespace NeonatalPhysiologyEngine.Models
             currentModel.modelInterface.StatusMessage = $"Initialized the mechanical ventilator model.";
         }
 
+        public void ModelCycle()
+        {
+
+        }
+
     }
 }

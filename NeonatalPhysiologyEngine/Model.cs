@@ -3,6 +3,7 @@ using NeonatalPhysiologyEngine.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace NeonatalPhysiologyEngine
 {
@@ -11,10 +12,10 @@ namespace NeonatalPhysiologyEngine
         public ModelDefinition modelDefinition;
         public ModelInterface modelInterface;
         public ECGModel ecg;
+        public OxygenationModel oxy;
+        public AcidBaseModel acidbase;
         public AutonomicNervousSystemModel ans;
         public SpontaneousBreathingModel breathing;
-        public AcidBaseModel ab;
-        public OxygenationModel oxy;
         public ContractionModel contraction;
         public MechanicalVentilatorModel ventilator;
         public AVInteractionModel avinteraction;
@@ -27,7 +28,6 @@ namespace NeonatalPhysiologyEngine
         public MaternalPlacentaModel maternalPlacenta;
         public ECMOModel ecmo;
         public CompressionModel compressions;
-
 
         public Model(string filename = "")
         {
@@ -141,17 +141,17 @@ namespace NeonatalPhysiologyEngine
                 // instantiate the ecg model
                 ecg = new ECGModel(this);
 
+                // instantiate the acidbase model
+                acidbase = new AcidBaseModel();
+
+                // instantiate the oxygenation model
+                oxy = new OxygenationModel();
+
                 // instantiate the autonomic nervous system model
                 ans = new AutonomicNervousSystemModel(this);
 
                 // instantiate the spontaneous breathing model
                 breathing = new SpontaneousBreathingModel(this);
-
-                // instantiate the acidbase model
-                ab = new AcidBaseModel(this);
-
-                // instantiate the oxygenation model
-                oxy = new OxygenationModel(this);
 
                 // instantiate the contraction model of the heart
                 contraction = new ContractionModel(this);
@@ -218,7 +218,7 @@ namespace NeonatalPhysiologyEngine
             int noNeededSteps = (int)(duration / modelDefinition.modeling_interval);
 
             // print a status message
-            modelInterface.StatusMessage = $"Calculating model for {duration} seconds in {noNeededSteps} steps.";
+            modelInterface.StatusMessage = $"{Environment.NewLine} Calculating model for {duration} seconds in {noNeededSteps} steps. {Environment.NewLine}";
 
             // calculate the model steps
             for (int i = 0; i < noNeededSteps; i++)
@@ -237,7 +237,13 @@ namespace NeonatalPhysiologyEngine
             }
 
             // report performance 
+            double performance_total = executionTimes.Sum();
+            double performance_step_mean = executionTimes.Average();
 
+            modelInterface.StatusMessage = $"> Model step interval     : {Math.Round(modelDefinition.modeling_interval * 1000,2)} ms.";
+            modelInterface.StatusMessage = $"> Model step size         : {Math.Round(modelDefinition.modeling_stepsize * 1000,2)} ms.";
+            modelInterface.StatusMessage = $"> Model run calculated in : {Math.Round(performance_total,3)} ms.";
+            modelInterface.StatusMessage = $"> Average model step in   : {Math.Round(performance_step_mean,3)} ms.";
         }
 
         void ModelCycle()
@@ -251,10 +257,69 @@ namespace NeonatalPhysiologyEngine
             // model cycles with smaller step size for higher resolution results
             for (int i = 0; i < frames; i++)
             {
-                // update the gasexchange blocks
+                // calculate the activation curves for the contraction of the heart chambers
+                contraction.ModelCycle();
 
+                // calculate all the flows over the valves
+                foreach(Valve valve in modelDefinition.valves)
+                {
+                    valve.CalculateFlow();
+                }
+
+                // calculate all the flows between the blood compartments
+                foreach(BloodConnector bloodCon in modelDefinition.blood_connectors)
+                {
+                    bloodCon.CalculateFlow();
+                }
+
+                // calculate all the flows between the blood compartments over the shunts
+                foreach (Shunt shunt in modelDefinition.shunts)
+                {
+                    shunt.CalculateFlow();
+                }
+
+                // calculate all the flows between the gas compartments
+                foreach (GasConnector gasCon in modelDefinition.gas_connectors)
+                {
+                    gasCon.CalculateFlow();
+                }
+
+                // calculate the container pressures
+                foreach (Container container in modelDefinition.containers)
+                {
+                    container.UpdateCompartment();
+                }
+
+                // calculate all the pressures of the blood compartments
+                foreach (BloodCompartment bloodComp in modelDefinition.blood_compartments)
+                {
+                    bloodComp.UpdateCompartment();
+                }
+
+                // calculate all the pressures of the blood compartments
+                foreach (GasCompartment gasComp in modelDefinition.gas_compartments)
+                {
+                    gasComp.UpdateCompartment(modelDefinition.metabolism["p_atm"]);
+                }
+
+                // spontaneous breathing
+                breathing.ModelCycle();
+
+                // ventilator
+                ventilator.ModelCycle();
+
+                // update the data collector in the model interface class if monitoring is true
+                if (modelInterface.MonitoringMode == 1)
+                {
+                    modelInterface.UpdateHiResData();
+                }
+                
             }
-           
+
+            // autonomic nervous system
+            ans.ModelCycle();
+
+
         }
 
     }

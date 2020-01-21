@@ -14,5 +14,10 @@ namespace NeonatalPhysiologyEngine.Models
 
             currentModel.modelInterface.StatusMessage = $"Initialized the spontanenous breathing model.";
         }
+
+        public void ModelCycle()
+        {
+
+        }
     }
 }
