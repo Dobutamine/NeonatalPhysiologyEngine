@@ -14,5 +14,10 @@ namespace NeonatalPhysiologyEngine.Models
 
             currentModel.modelInterface.StatusMessage = $"Initialized the liver model.";
         }
+
+        public void ModelCycle()
+        {
+
+        }
     }
 }

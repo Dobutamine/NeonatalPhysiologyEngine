@@ -14,5 +14,10 @@ namespace NeonatalPhysiologyEngine.Models
 
             currentModel.modelInterface.StatusMessage = $"Initialized the birth model.";
         }
+
+        public void ModelCycle()
+        {
+
+        }
     }
 }

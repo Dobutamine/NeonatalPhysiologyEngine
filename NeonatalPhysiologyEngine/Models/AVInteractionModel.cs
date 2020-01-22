@@ -14,5 +14,10 @@ namespace NeonatalPhysiologyEngine.Models
 
             currentModel.modelInterface.StatusMessage = $"Initialized the atrio-ventricular interaction model.";
         }
+
+        public void ModelCycle()
+        {
+
+        }
     }
 }

@@ -58,5 +58,10 @@ namespace NeonatalPhysiologyEngine.IO
         {
 
         }
+
+        public void UpdateLoResData()
+        {
+
+        }
     }
 }

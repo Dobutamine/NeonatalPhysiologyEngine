@@ -75,6 +75,20 @@ namespace NeonatalPhysiologyEngine
             
         }
 
+        public T FindModelComponent<T>(string comp_name)
+        {
+            foreach (BloodCompartment bloodComp in modelDefinition.blood_compartments)
+            {
+                if (comp_name == bloodComp.name)
+                {
+                    return (T)Convert.ChangeType(bloodComp, typeof(T));
+                }
+            }
+
+            return (T)Convert.ChangeType(null, typeof(T));
+
+        }
+
         public void InitModel()
         {
             // initialize all the model components and update the status message in de modelinterface class for notification purposes
@@ -206,7 +220,7 @@ namespace NeonatalPhysiologyEngine
 
         }
 
-        public void CalculateModel(int duration = 10)
+        public void CalculateModel(int duration = 60)
         {
             // declare a stopwatch to measure the execution times
             Stopwatch s_modelCycle = new Stopwatch();
@@ -218,7 +232,7 @@ namespace NeonatalPhysiologyEngine
             int noNeededSteps = (int)(duration / modelDefinition.modeling_interval);
 
             // print a status message
-            modelInterface.StatusMessage = $"{Environment.NewLine} Calculating model for {duration} seconds in {noNeededSteps} steps. {Environment.NewLine}";
+            modelInterface.StatusMessage = $"{Environment.NewLine}Calculating model for {duration} seconds in {noNeededSteps} steps. {Environment.NewLine}";
 
             // calculate the model steps
             for (int i = 0; i < noNeededSteps; i++)
@@ -244,20 +258,6 @@ namespace NeonatalPhysiologyEngine
             modelInterface.StatusMessage = $"> Model step size         : {Math.Round(modelDefinition.modeling_stepsize * 1000,2)} ms.";
             modelInterface.StatusMessage = $"> Model run calculated in : {Math.Round(performance_total,3)} ms.";
             modelInterface.StatusMessage = $"> Average model step in   : {Math.Round(performance_step_mean,3)} ms.";
-        }
-
-        public T FindModelComponent<T>(string comp_name)
-        {
-            foreach(BloodCompartment bloodComp in modelDefinition.blood_compartments)
-            {
-                if (comp_name == bloodComp.name)
-                {
-                    return (T)Convert.ChangeType(bloodComp, typeof(T));
-                }      
-            }
-
-            return (T)Convert.ChangeType(null, typeof(T));
-
         }
 
         void ModelCycle()
@@ -334,16 +334,46 @@ namespace NeonatalPhysiologyEngine
                 // ventilator
                 ventilator.ModelCycle();
 
-                // update the data collector in the model interface class if monitoring is true
-                if (modelInterface.MonitoringMode == 1)
-                {
-                    modelInterface.UpdateHiResData();
-                }
-                
-            }
+                // av interaction model
+                avinteraction.ModelCycle();
 
-            // autonomic nervous system model step
+                // birth model
+                birth.ModelCycle();
+
+                // compression model
+                compressions.ModelCycle();
+            
+                // ECMO model
+                ecmo.ModelCycle();
+
+                // maternal placenta model
+                maternalPlacenta.ModelCycle();
+
+                // update the data collector in the model interface with high resolution data
+                modelInterface.UpdateHiResData();
+
+            }
+            
+            // brain model
+            brain.ModelCycle();
+
+            // drug model
+            drugs.ModelCycle();
+
+            // Global hypoxia
+            hypoxia.ModelCycle();
+
+            // kidney model
+            kidneys.ModelCycle();
+
+            // liver mode
+            liver.ModelCycle();
+
+            // autonomic nervous system model
             ans.ModelCycle();
+
+            // update the data collector in the model interface class with low resolution data
+            modelInterface.UpdateLoResData();
 
         }
 

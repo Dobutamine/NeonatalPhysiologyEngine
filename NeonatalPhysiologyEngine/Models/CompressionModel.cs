@@ -14,5 +14,10 @@ namespace NeonatalPhysiologyEngine.Models
 
             currentModel.modelInterface.StatusMessage = $"Initialized the compressions model.";
         }
+
+        public void ModelCycle()
+        {
+
+        }
     }
 }
