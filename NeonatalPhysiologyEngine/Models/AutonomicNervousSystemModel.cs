@@ -17,18 +17,13 @@ namespace NeonatalPhysiologyEngine.Models
             currentModel.modelInterface.StatusMessage = $"Initialized the autonomic nervous system model.";
 
             // find a reference to the heart chamber compartments
-            foreach (BloodCompartment bloodComp in currentModel.modelDefinition.blood_compartments)
-            {
-                if (bloodComp.name == "AA")
-                {
-                    AA = bloodComp;
-                }
-            }
+            AA = currentModel.FindModelComponent<BloodCompartment>("AA");
         }
 
         public void ModelCycle()
         {
             currentModel.acidbase.CalcAcidBaseFromTCO2(AA);
+            currentModel.oxy.CalcOxygenationFromTO2(AA);
 
         }
     }

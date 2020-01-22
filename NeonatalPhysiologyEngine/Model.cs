@@ -246,6 +246,20 @@ namespace NeonatalPhysiologyEngine
             modelInterface.StatusMessage = $"> Average model step in   : {Math.Round(performance_step_mean,3)} ms.";
         }
 
+        public T FindModelComponent<T>(string comp_name)
+        {
+            foreach(BloodCompartment bloodComp in modelDefinition.blood_compartments)
+            {
+                if (comp_name == bloodComp.name)
+                {
+                    return (T)Convert.ChangeType(bloodComp, typeof(T));
+                }      
+            }
+
+            return (T)Convert.ChangeType(null, typeof(T));
+
+        }
+
         void ModelCycle()
         {
             // calculate the number of frames
@@ -302,6 +316,18 @@ namespace NeonatalPhysiologyEngine
                     gasComp.UpdateCompartment(modelDefinition.metabolism["p_atm"]);
                 }
 
+                // do the gasexchange 
+                foreach(GasExchanger gasExchanger in modelDefinition.exchangers)
+                {
+                    gasExchanger.CalculateGasexchange();
+                }
+
+                // calculate the diffusors
+                foreach(Diffusor diffusor in modelDefinition.diffusors)
+                {
+                    diffusor.CalculateDiffusion();
+                }
+
                 // spontaneous breathing
                 breathing.ModelCycle();
 
@@ -316,9 +342,8 @@ namespace NeonatalPhysiologyEngine
                 
             }
 
-            // autonomic nervous system
+            // autonomic nervous system model step
             ans.ModelCycle();
-
 
         }
 

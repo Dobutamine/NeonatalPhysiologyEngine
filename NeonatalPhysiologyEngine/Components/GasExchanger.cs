@@ -46,6 +46,8 @@ namespace NeonatalPhysiologyEngine
                 }
             }
 
+
+
             currentModel.modelInterface.StatusMessage = $"Initialized gas exchange unit {name} : {comp_blood.name} to {comp_gas.name}";
 
 
@@ -53,7 +55,9 @@ namespace NeonatalPhysiologyEngine
 
         public void CalculateGasexchange()
         {
-            // first calculate the partial pressures of oxygen and carbon dioxide
+            // first calculate the partial pressures of oxygen and carbon dioxide in the blood compartment
+            currentModel.acidbase.CalcAcidBaseFromTCO2(comp_blood);
+            currentModel.oxy.CalcOxygenationFromTO2(comp_blood);
 
             // calculate the flux
             double flux_o2 = (comp_blood.po2 * 7.50061683 - comp_gas.po2) * diff_o2 * currentModel.modelDefinition.modeling_stepsize;

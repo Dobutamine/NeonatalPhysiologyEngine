@@ -23,33 +23,17 @@ namespace NeonatalPhysiologyEngine.Models
         BloodCompartment RV;
         BloodCompartment LV;
 
-
         public ContractionModel(Model cm)
         {
             currentModel = cm;
 
             currentModel.modelInterface.StatusMessage = $"Initialized the contraction model.";
-            
+
             // find a reference to the heart chamber compartments
-            foreach (BloodCompartment bloodComp in currentModel.modelDefinition.blood_compartments)
-            {
-                if (bloodComp.name == "RA")
-                {
-                    RA = bloodComp;
-                }
-                if (bloodComp.name == "RV")
-                {
-                    RV = bloodComp;
-                }
-                if (bloodComp.name == "LA")
-                {
-                    LA = bloodComp;
-                }
-                if (bloodComp.name == "LV")
-                {
-                    LV = bloodComp;
-                }
-            }
+            RA = currentModel.FindModelComponent<BloodCompartment>("RA");
+            LA = currentModel.FindModelComponent<BloodCompartment>("LA");
+            RV = currentModel.FindModelComponent<BloodCompartment>("RV");
+            LV = currentModel.FindModelComponent<BloodCompartment>("LV");
         }
 
         public void ModelCycle()
@@ -117,9 +101,6 @@ namespace NeonatalPhysiologyEngine.Models
             RV.el_contraction_activation = vaf_right;
             LA.el_contraction_activation = aaf_left;
             LV.el_contraction_activation = vaf_right;
-
-
-
 
         }
     }
