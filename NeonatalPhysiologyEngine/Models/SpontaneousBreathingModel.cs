@@ -30,21 +30,25 @@ namespace NeonatalPhysiologyEngine.Models
 
         public SpontaneousBreathingModel(Model cm)
         {
+            // reference the current model instance
             currentModel = cm;
 
+            // get a reference to the model needed components
             ALL = currentModel.FindModelComponent<GasCompartment>("ALL");
             ALR = currentModel.FindModelComponent<GasCompartment>("ALR");
             CHEST_L = currentModel.FindModelComponent<Container>("CHEST_L");
             CHEST_R = currentModel.FindModelComponent<Container>("CHEST_R");
 
+            // update the status
             currentModel.modelInterface.StatusMessage = $"Initialized the spontanenous breathing model.";
         }
 
         public void ModelCycle()
         {
-
+            // check whether the spontaneous breathing is enabled
             if (currentModel.modelDefinition.breathing["spont_breathing_enabled"] == 1)
             {
+                // get the current spontaneous resp rate 
                 if (currentModel.modelDefinition.breathing["spont_resp_rate"] > 0)
                 {
                     breath_timer_period = 60000 / currentModel.modelDefinition.breathing["spont_resp_rate"];
