@@ -12,10 +12,7 @@ namespace NeonatalPhysiologyGUI.ViewModels
         double screeny = 800;
         double dpi = 1.5;
 
-        Model physiologyEngine;
-
-        NeonatalPhysiologyEngine.Model TestInstance;
-
+        Model model;
 
         public MainViewModel(double _screenx, double _screeny, double _dpi_scale)
         {
@@ -23,10 +20,7 @@ namespace NeonatalPhysiologyGUI.ViewModels
             screeny = _screeny;
             dpi = _dpi_scale;
 
-            TestInstance = new NeonatalPhysiologyEngine.Model();
-
-            Console.WriteLine("TESTSTSTSTS");
-
+            model = new Model();
 
         }
     }

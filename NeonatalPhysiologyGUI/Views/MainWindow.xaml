@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NeonatalPhysiologyGUI"
         mc:Ignorable="d"
-        Title="Neonatal Physiology" Height="450" Width="800">
+        Title="Neonatal and fetal physiology engine" Height="800" Width="1280" WindowStartupLocation="CenterScreen">
     <Grid>
 
     </Grid>
