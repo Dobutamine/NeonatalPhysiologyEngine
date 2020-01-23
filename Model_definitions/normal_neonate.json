@@ -32,8 +32,8 @@
     "ecg_signal": 0.0
   },
   "breathing": {
-    "spont_breathing_enabled": 0,
-    "spont_resp_rate": 0.0,
+    "spont_breathing_enabled": 1,
+    "spont_resp_rate": 30.0,
     "ref_minute_volume": 630.0,
     "ref_tidal_volume": 18.0,
     "target_minute_volume": 630.0,
@@ -42,7 +42,7 @@
     "resp_muscle_pressure": 0.0
   },
   "ventilator": {
-    "ventilator_enabled": 1,
+    "ventilator_enabled": 0,
     "volume_controlled": 1,
     "target_tidal_volume": 25.0,
     "max_pip": 20.0,

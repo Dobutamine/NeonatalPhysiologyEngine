@@ -85,6 +85,72 @@ namespace NeonatalPhysiologyEngine
                 }
             }
 
+            foreach (BloodConnector bloodCon in modelDefinition.blood_connectors)
+            {
+                if (comp_name == bloodCon.name)
+                {
+                    return (T)Convert.ChangeType(bloodCon, typeof(T));
+                }
+            }
+
+            foreach (Valve valve in modelDefinition.valves)
+            {
+                if (comp_name == valve.name)
+                {
+                    return (T)Convert.ChangeType(valve, typeof(T));
+                }
+            }
+
+            foreach (Shunt shunt in modelDefinition.shunts)
+            {
+                if (comp_name == shunt.name)
+                {
+                    return (T)Convert.ChangeType(shunt, typeof(T));
+                }
+            }
+
+
+            foreach (GasCompartment gasComp in modelDefinition.gas_compartments)
+            {
+                if (comp_name == gasComp.name)
+                {
+                    return (T)Convert.ChangeType(gasComp, typeof(T));
+                }
+            }
+
+            foreach (GasConnector gasCon in modelDefinition.gas_connectors)
+            {
+                if (comp_name == gasCon.name)
+                {
+                    return (T)Convert.ChangeType(gasCon, typeof(T));
+                }
+            }
+
+            foreach (Container container in modelDefinition.containers)
+            {
+                if (comp_name == container.name)
+                {
+                    return (T)Convert.ChangeType(container, typeof(T));
+                }
+            }
+
+            foreach (GasExchanger gasExchanger in modelDefinition.exchangers)
+            {
+                if (comp_name == gasExchanger.name)
+                {
+                    return (T)Convert.ChangeType(gasExchanger, typeof(T));
+                }
+            }
+
+            foreach (Diffusor diffusor in modelDefinition.diffusors)
+            {
+                if (comp_name == diffusor.name)
+                {
+                    return (T)Convert.ChangeType(diffusor, typeof(T));
+                }
+            }
+
+
             return (T)Convert.ChangeType(null, typeof(T));
 
         }
