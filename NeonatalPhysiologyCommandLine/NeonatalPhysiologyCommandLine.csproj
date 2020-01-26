@@ -6,6 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="normal_neonate.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="normal_neonate.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="NeonatalPhysiologyEngine">
       <HintPath>..\NeonatalPhysiologyEngine\bin\x64\Debug\netcoreapp3.1\NeonatalPhysiologyEngine.dll</HintPath>
     </Reference>

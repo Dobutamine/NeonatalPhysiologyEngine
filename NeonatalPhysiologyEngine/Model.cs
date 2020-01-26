@@ -1,9 +1,12 @@
-﻿using NeonatalPhysiologyEngine.IO;
+﻿using Microsoft.Extensions.FileProviders;
+using NeonatalPhysiologyEngine.IO;
 using NeonatalPhysiologyEngine.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 
 namespace NeonatalPhysiologyEngine
 {
@@ -38,21 +41,15 @@ namespace NeonatalPhysiologyEngine
                 StatusMessage = $"Neonatal Physiology Engine version 1.0. {Environment.NewLine}"
             };
 
-            // load model if a filename is provided
-            if (filename != "")
-            {
-                LoadModel(filename);
-            }
-
         }
 
-        public void LoadModel(string filename)
+        public void LoadModelFromDisk(string filename)
         {
-            modelDefinition = JSONIO.ImportPatient(filename);
+            modelDefinition = JSONIO.ImportPatientFromFileOnDisk(filename);
+
             if (modelDefinition != null)
             {
                 modelInterface.StatusMessage = $"Imported patient {filename}. {Environment.NewLine}";
-
                 // initialize the loaded model
                 InitModel();
 
@@ -61,6 +58,22 @@ namespace NeonatalPhysiologyEngine
                 modelInterface.StatusMessage = $"Failed to import patient {filename}. {Environment.NewLine}";
             }
             
+        }
+
+        public void LoadModelFromJSON(string json_file)
+        {
+            modelDefinition = JSONIO.ImportPatientFromText(json_file);
+
+            if (modelDefinition != null)
+            {
+                modelInterface.StatusMessage = $"Imported patient : {modelDefinition.name}. {Environment.NewLine}";
+                // initialize the loaded model
+                InitModel();
+
+            } else
+            {
+                modelInterface.StatusMessage = $"Failed to import patient. {Environment.NewLine}";
+            }
         }
 
         public void SaveModel(string filename)

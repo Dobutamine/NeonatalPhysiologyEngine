@@ -1,17 +1,19 @@
-﻿using System;
+﻿using Microsoft.Extensions.FileProviders;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
-
+using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
 
 namespace NeonatalPhysiologyEngine.IO
 {
     public static class JSONIO
     {
-        public static ModelDefinition ImportPatient(string filename)
+        public static ModelDefinition ImportPatientFromFileOnDisk(string filename)
         {
         
             var options = new JsonSerializerOptions
@@ -22,7 +24,9 @@ namespace NeonatalPhysiologyEngine.IO
 
             try
             {
-                var jsonString = File.ReadAllText(filename);
+             
+
+                var jsonString = System.IO.File.ReadAllText(filename);
                 var jsonModel = JsonSerializer.Deserialize<ModelDefinition>(jsonString, options);
 
                 return jsonModel;
@@ -32,6 +36,29 @@ namespace NeonatalPhysiologyEngine.IO
                 return null;
             }
             
+        }
+
+        public static ModelDefinition ImportPatientFromText(string config_json)
+        {
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
+
+            try
+            {
+                var jsonModel = JsonSerializer.Deserialize<ModelDefinition>(config_json, options);
+
+                return jsonModel;
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
         }
 
         public static bool ExportPatient(string filename, ModelDefinition currentModel)
@@ -45,7 +72,7 @@ namespace NeonatalPhysiologyEngine.IO
             try
             {
                 var modelJson = JsonSerializer.Serialize(currentModel, options);
-                File.WriteAllText(filename, modelJson);
+                System.IO.File.WriteAllText(filename, modelJson);
                 return true;
 
             } catch (Exception ex)
