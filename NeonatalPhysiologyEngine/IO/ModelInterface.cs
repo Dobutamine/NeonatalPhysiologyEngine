@@ -54,14 +54,10 @@ namespace NeonatalPhysiologyEngine.IO
             currentModel = cm;
         }
 
-        public void UpdateHiResData()
-        {
+      
 
-        }
 
-        public void UpdateLoResData()
-        {
-
-        }
+         
     }
+
 }

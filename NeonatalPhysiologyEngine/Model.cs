@@ -14,6 +14,7 @@ namespace NeonatalPhysiologyEngine
     {
         public ModelDefinition modelDefinition;
         public ModelInterface modelInterface;
+        public DataCollector dataCollector;
         public ECGModel ecg;
         public OxygenationModel oxy;
         public AcidBaseModel acidbase;
@@ -281,6 +282,9 @@ namespace NeonatalPhysiologyEngine
 
                 // instantiate the compressions model
                 compressions = new CompressionModel(this);
+
+                // instantiate the datacollector
+                dataCollector = new DataCollector(this);
             }
             else
             {
@@ -428,8 +432,8 @@ namespace NeonatalPhysiologyEngine
                 // maternal placenta model
                 maternalPlacenta.ModelCycle();
 
-                // update the data collector in the model interface with high resolution data
-                modelInterface.UpdateHiResData();
+                // update the data collector with high resolution data
+                dataCollector.UpdateHires();
 
             }
             
@@ -451,8 +455,8 @@ namespace NeonatalPhysiologyEngine
             // autonomic nervous system model
             ans.ModelCycle();
 
-            // update the data collector in the model interface class with low resolution data
-            modelInterface.UpdateLoResData();
+            // update the data collector with low resolution data
+            dataCollector.UpdateLoRes();
 
         }
 

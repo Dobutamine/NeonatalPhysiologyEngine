@@ -13,6 +13,10 @@ namespace NeonatalPhysiologyCommandLine
 
             LoadModel();
 
+            test_model.CalculateModel(60);
+
+ 
+
         }
         static void LoadModel(string filename = "" )
         {
