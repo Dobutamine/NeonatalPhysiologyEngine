@@ -15,6 +15,8 @@ namespace NeonatalPhysiologyGUI.ViewModels
             currentModel = new Model();
 
             LoadModel();
+
+            currentModel.StartRealTimeModel();
         }
 
         public void LoadModel(string filename = "")
