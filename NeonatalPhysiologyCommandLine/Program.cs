@@ -17,10 +17,6 @@ namespace NeonatalPhysiologyCommandLine
 
             test_model.CalculateModel(60);
 
-            
-
- 
-
         }
 
         private static void ModelInterface_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

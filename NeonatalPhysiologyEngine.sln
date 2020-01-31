@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeonatalPhysiologyEngine", "NeonatalPhysiologyEngine\NeonatalPhysiologyEngine.csproj", "{433D2A1D-6447-42B9-B7E5-0CE70430EBF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeonatalPhysiologyCommandLine", "NeonatalPhysiologyCommandLine\NeonatalPhysiologyCommandLine.csproj", "{02D1EBA7-66D2-44E6-8353-654C95A84150}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeonatalPhysiologyCommandLine", "NeonatalPhysiologyCommandLine\NeonatalPhysiologyCommandLine.csproj", "{02D1EBA7-66D2-44E6-8353-654C95A84150}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeonatalPhysiologyGUI", "NeonatalPhysiologyGUI\NeonatalPhysiologyGUI.csproj", "{D55D9929-5D04-4E0A-A346-1324FC0551E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +33,14 @@ Global
 		{02D1EBA7-66D2-44E6-8353-654C95A84150}.Release|Any CPU.Build.0 = Release|Any CPU
 		{02D1EBA7-66D2-44E6-8353-654C95A84150}.Release|x64.ActiveCfg = Release|Any CPU
 		{02D1EBA7-66D2-44E6-8353-654C95A84150}.Release|x64.Build.0 = Release|Any CPU
+		{D55D9929-5D04-4E0A-A346-1324FC0551E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D55D9929-5D04-4E0A-A346-1324FC0551E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D55D9929-5D04-4E0A-A346-1324FC0551E8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D55D9929-5D04-4E0A-A346-1324FC0551E8}.Debug|x64.Build.0 = Debug|Any CPU
+		{D55D9929-5D04-4E0A-A346-1324FC0551E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D55D9929-5D04-4E0A-A346-1324FC0551E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D55D9929-5D04-4E0A-A346-1324FC0551E8}.Release|x64.ActiveCfg = Release|Any CPU
+		{D55D9929-5D04-4E0A-A346-1324FC0551E8}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
