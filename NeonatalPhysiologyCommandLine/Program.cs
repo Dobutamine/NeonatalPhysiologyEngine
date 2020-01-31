@@ -12,12 +12,26 @@ namespace NeonatalPhysiologyCommandLine
         {
 
             LoadModel();
+            
+            test_model.modelInterface.PropertyChanged += ModelInterface_PropertyChanged;
 
             test_model.CalculateModel(60);
+
+            
 
  
 
         }
+
+        private static void ModelInterface_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+
+            if (e.PropertyName == "ModelUpdated")
+            {
+                
+            }
+        }
+
         static void LoadModel(string filename = "" )
         {
             if (filename == "" )

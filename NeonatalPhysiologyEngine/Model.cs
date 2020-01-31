@@ -432,8 +432,8 @@ namespace NeonatalPhysiologyEngine
                 // maternal placenta model
                 maternalPlacenta.ModelCycle();
 
-                // update the data collector with high resolution data
-                dataCollector.UpdateHires();
+                // update the data collector
+                dataCollector.ModelCycle();
 
             }
             
@@ -455,8 +455,8 @@ namespace NeonatalPhysiologyEngine
             // autonomic nervous system model
             ans.ModelCycle();
 
-            // update the data collector with low resolution data
-            dataCollector.UpdateLoRes();
+            // signal the modelinterface class that a model run has been completed
+            modelInterface.ModelUpdated = true; 
 
         }
 

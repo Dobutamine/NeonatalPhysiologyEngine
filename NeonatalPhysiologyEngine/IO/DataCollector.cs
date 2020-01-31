@@ -32,17 +32,45 @@ namespace NeonatalPhysiologyEngine.IO
         BloodConnector SVC_RA;
         BloodConnector IVC_RA;
 
+        // lung and respiration
+        GasCompartment OUT;
+        GasCompartment NCA;
+        GasCompartment ALL;
+        GasCompartment ALR;
+        GasCompartment VENTIN;
+        GasCompartment VENTOUT;
+        GasCompartment TUBINGIN;
+        GasCompartment TUBINGOUT;
+        GasCompartment YPIECE;
+        Container CHEST_L;
+        Container CHEST_R;
+
+        GasConnector OUT_NCA;
+        GasConnector NCA_ALL;
+        GasConnector NCA_ALR;
+        GasConnector VENTIN_TUBINGIN;
+        GasConnector TUBINGIN_YPIECE;
+        GasConnector YPIECE_NCA;
+        GasConnector YPIECE_TUBINGOUT;
+        GasConnector TUBINGOUT_VENTOUT;
+
+        HemodynamicData hemodynamicData = new HemodynamicData();
         CirculationData circulationData = new CirculationData();
         RespirationData respirationData = new RespirationData();
-        BloodgasData bloodgasData = new BloodgasData();
+        LungData lungData = new LungData();
+        LabData labData = new LabData();
         VitalsData vitalsData = new VitalsData();
         ECGData ecgData = new ECGData();
         ECMOData ecmoData = new ECMOData();
+        ANSData ansData = new ANSData();
 
+        double current_running_time = 0;
 
-        double current_time_hires = 0;
+        double update_counter_interval = 0;
 
-        double current_time_lores = 0;
+        double update_counter_sec = 0;
+
+        public bool Recording { get; set; } = true;
 
         public DataCollector(Model cm)
         {
@@ -66,24 +94,126 @@ namespace NeonatalPhysiologyEngine.IO
             IVC_RA = currentModel.FindModelComponent<BloodConnector>("IVC_RA");
             SVC_RA = currentModel.FindModelComponent<BloodConnector>("SVC_RA");
 
-            circulationData = new CirculationData();
+            // get the most common compartments and connectors
+            OUT = currentModel.FindModelComponent<GasCompartment>("OUT");
+            NCA = currentModel.FindModelComponent<GasCompartment>("NCA");
+            ALL = currentModel.FindModelComponent<GasCompartment>("ALL");
+            ALR = currentModel.FindModelComponent<GasCompartment>("ALR");
+            VENTIN = currentModel.FindModelComponent<GasCompartment>("VENTIN");
+            TUBINGIN = currentModel.FindModelComponent<GasCompartment>("TUBINGIN");
+            YPIECE = currentModel.FindModelComponent<GasCompartment>("YPIECE");
+            TUBINGOUT = currentModel.FindModelComponent<GasCompartment>("TUBINGOUT");
+            VENTOUT = currentModel.FindModelComponent<GasCompartment>("VENTOUT");
+            CHEST_L = currentModel.FindModelComponent<Container>("CHEST_L");
+            CHEST_R = currentModel.FindModelComponent<Container>("CHEST_R");
 
-            respirationData = new RespirationData();
+            OUT_NCA = currentModel.FindModelComponent<GasConnector>("OUT_NCA");
+            NCA_ALL = currentModel.FindModelComponent<GasConnector>("NCA_ALL");
+            NCA_ALR = currentModel.FindModelComponent<GasConnector>("NCA_ALR");
+            VENTIN_TUBINGIN = currentModel.FindModelComponent<GasConnector>("VENTIN_TUBINGIN");
+            TUBINGIN_YPIECE = currentModel.FindModelComponent<GasConnector>("TUBINGIN_YPIECE");
+            YPIECE_NCA = currentModel.FindModelComponent<GasConnector>("YPIECE_NCA");
+            YPIECE_TUBINGOUT = currentModel.FindModelComponent<GasConnector>("YPIECE_TUBINGOUT");
+            TUBINGOUT_VENTOUT = currentModel.FindModelComponent<GasConnector>("TUBINGOUT_VENTOUT");
+
+            StartDatarecording();
 
         }
         
+        public void StartDatarecording()
+        {
+            ResetData();
+
+            Recording = true;
+            
+            current_running_time = 0;
+        }
+
+        public void StopDatarecording()
+        {
+            Recording = false;
+
+        }
+
+        public void ModelCycle()
+        {
+            if (Recording)
+            {
+                // store data with a 1.0 second interval
+                if (update_counter_sec > 1.0)
+                {
+
+                    UpdateHemodynamicData();
+
+                    UpdateRespirationData();
+
+                    UpdateLabData();
+
+                    UpdateVitalsData();
+
+                    UpdateECMOData();
+
+                    update_counter_sec = 0;
+                }
+
+                // store data with a <modeling_interval> interval
+                if (update_counter_interval > currentModel.modelDefinition.modeling_interval)
+                {
+                    UpdateECGData();
+
+                    UpdateANSData();
+
+                    update_counter_interval = 0;
+                }
+
+
+                // store data with a <modeling_stepsize> interval
+
+                UpdateCirculationData();
+
+                UpdateLungData();
+
+                // increase the running time with a <modeling_stepsize> step
+                current_running_time += currentModel.modelDefinition.modeling_stepsize;
+
+                // increase the update counters
+                update_counter_interval += currentModel.modelDefinition.modeling_stepsize;
+                update_counter_sec += currentModel.modelDefinition.modeling_stepsize;
+            }
+         
+        }
+
         public void ResetData()
         {
-            circulationData = new CirculationData();
+            HemodynamicData hemodynamicData = new HemodynamicData();
+            CirculationData circulationData = new CirculationData();
+            RespirationData respirationData = new RespirationData();
+            LungData lungData = new LungData();
+            LabData labData = new LabData();
+            VitalsData vitalsData = new VitalsData();
+            ECGData ecgData = new ECGData();
+            ECMOData ecmoData = new ECMOData();
+            ANSData ansData = new ANSData();
 
-            respirationData = new RespirationData();
+        }
 
+        void UpdateECGData()
+        {
+            ecgData.time.Add(current_running_time);
+            ecgData.ecg_signal.Add(currentModel.modelDefinition.ecg["ecg_signal"]);
+            ecgData.heartrate.Add(currentModel.modelDefinition.ecg["heart_rate"]);
+            ecgData.rhythm_type.Add(currentModel.modelDefinition.ecg["rhythm_type"]);
+
+        }
+
+        void UpdateANSData()
+        {
 
         }
 
         void UpdateCirculationData()
         {
-            circulationData.time.Add(current_time_hires);
+            circulationData.time.Add(current_running_time);
 
             circulationData.lv_pres.Add(LV.pres_current);
             circulationData.rv_pres.Add(RV.pres_current);
@@ -106,12 +236,12 @@ namespace NeonatalPhysiologyEngine.IO
 
         }
 
-        void UpdateLungData()
+        void UpdateLabData()
         {
 
         }
 
-        void UpdateLabData()
+        void UpdateECMOData()
         {
 
         }
@@ -121,24 +251,40 @@ namespace NeonatalPhysiologyEngine.IO
 
         }
 
-        public void UpdateHires()
+        void UpdateLungData()
         {
-            UpdateCirculationData();
-
-            UpdateLungData();
-
-            current_time_hires += currentModel.modelDefinition.modeling_stepsize;
 
         }
 
-        public void UpdateLoRes()
+        void UpdateHemodynamicData()
         {
-            UpdateVitalsData();
 
-            UpdateLabData();
-
-            current_time_lores += currentModel.modelDefinition.modeling_interval;
         }
+
+        void UpdateRespirationData()
+        {
+
+        }
+
+    }
+
+    public class HemodynamicData
+    {
+        public List<double> heartrate = new List<double>();
+        public List<double> stroke_volume_left = new List<double>();
+        public List<double> stroke_volume_right = new List<double>();
+        public List<double> cardiac_output = new List<double>();
+
+        public List<double> ivc_flow = new List<double>();
+        public List<double> svc_flow = new List<double>();
+
+        public List<double> abp_syst = new List<double>();
+        public List<double> abp_diast = new List<double>();
+        public List<double> abp_mean = new List<double>();
+        public List<double> pap_syst = new List<double>();
+        public List<double> pap_diast = new List<double>();
+        public List<double> pap_mean = new List<double>();
+        public List<double> cvp = new List<double>();
     }
 
     public class CirculationData
@@ -169,8 +315,21 @@ namespace NeonatalPhysiologyEngine.IO
 
     public class RespirationData
     {
-        public List<double> time = new List<double>();
+        public List<double> resp_rate = new List<double>();
+        public List<double> tidal_volume = new List<double>();
+        public List<double> minute_volume = new List<double>();
+        public List<double> p_mus = new List<double>();
 
+        public List<double> t_in = new List<double>();
+        public List<double> t_out = new List<double>();
+        public List<double> max_pip = new List<double>();
+        public List<double> peep = new List<double>();
+
+    }
+
+    public class LungData
+    {
+        public List<double> time = new List<double>();
         public List<double> out_pres = new List<double>();
         public List<double> nca_pres = new List<double>();
         public List<double> all_pres = new List<double>();
@@ -190,22 +349,57 @@ namespace NeonatalPhysiologyEngine.IO
         public List<double> ypiece_tubingout_flow = new List<double>();
     }
 
-    public class BloodgasData
+    public class LabData
     {
+        public List<double> time = new List<double>();
+
+        public List<double> arterial_ph = new List<double>();
+        public List<double> arterial_po2 = new List<double>();
+        public List<double> arterial_pco2 = new List<double>();
+        public List<double> arterial_hco3 = new List<double>();
+        public List<double> arterial_be = new List<double>();
+        public List<double> alveolar_po2 = new List<double>();
+        public List<double> alveolar_pco2 = new List<double>();
+
+        public List<double> arterial_so2 = new List<double>();
+        public List<double> venous_so2 = new List<double>();
+        public List<double> postductal_so2 = new List<double>();
+        public List<double> preductal_so2 = new List<double>();
+        public List<double> arterial_lactate = new List<double>();
 
     }
 
     public class VitalsData
     {
+        public List<double> time = new List<double>();
 
+        public List<double> heartrate = new List<double>();
+        public List<double> resp_rate = new List<double>();
+        public List<double> so2_pre = new List<double>();
+        public List<double> so2_post = new List<double>();
+        public List<double> arterial_systole = new List<double>();
+        public List<double> arterial_diastole = new List<double>();
+        public List<double> cvp = new List<double>();
+        public List<double> endtidal_co2 = new List<double>();
+        public List<double> temperature = new List<double>();
     }
 
     public class ECGData
     {
+        public List<double> time = new List<double>();
+
+        public List<double> ecg_signal = new List<double>();
+        public List<double> heartrate = new List<double>();
+        public List<double> rhythm_type = new List<double>();
 
     }
 
     public class ECMOData
+    {
+
+    }
+
+    public class ANSData
     {
 
     }
