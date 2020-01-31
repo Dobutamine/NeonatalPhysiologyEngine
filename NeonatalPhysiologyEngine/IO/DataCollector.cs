@@ -93,6 +93,9 @@ namespace NeonatalPhysiologyEngine.IO
             RA_RV = currentModel.FindModelComponent<Valve>("RA_RV");
             IVC_RA = currentModel.FindModelComponent<BloodConnector>("IVC_RA");
             SVC_RA = currentModel.FindModelComponent<BloodConnector>("SVC_RA");
+            OFO = currentModel.FindModelComponent<Shunt>("OFO");
+            PDA = currentModel.FindModelComponent<Shunt>("PDA");
+            VSD = currentModel.FindModelComponent<Shunt>("VSD");
 
             // get the most common compartments and connectors
             OUT = currentModel.FindModelComponent<GasCompartment>("OUT");

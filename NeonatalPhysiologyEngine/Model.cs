@@ -7,11 +7,15 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 
 namespace NeonatalPhysiologyEngine
 {
     public class Model
     {
+        // declare the main modeling timer
+        Timer modelingTimer;
+
         public ModelDefinition modelDefinition;
         public ModelInterface modelInterface;
         public DataCollector dataCollector;
@@ -295,16 +299,43 @@ namespace NeonatalPhysiologyEngine
 
         public void StartRealTimeModel()
         {
+            // start the modeling timer if the model loaded correctly
+            if (modelDefinition != null)
+            {
+                if (modelingTimer != null)
+                {
+                    modelingTimer.Dispose();
+                    modelInterface.StatusMessage = $"Realtime model restarting.";
+                }
+                else
+                {
+                    modelInterface.StatusMessage = $"Realtime model starting.";
+                }
 
+                // restart the modeling timer
+                int modelTime = (int)(modelDefinition.modeling_interval * 1000);
+                modelingTimer = new Timer(ModelCycle, null, 0, modelTime);
+            }
         }
 
         public void StopRealTimeModel()
         {
-
+            // stop the modeling timer
+            if (modelingTimer != null)
+            {
+                modelInterface.StatusMessage = $"Realtime model stopped.";
+                modelingTimer.Dispose();
+            }
         }
 
         public void CalculateModel(int duration = 60)
         {
+            // first delay the realtime model
+            if (modelingTimer != null)
+            {
+                modelingTimer.Change(0, duration * 1000);
+            }
+
             // declare a stopwatch to measure the execution times
             Stopwatch s_modelCycle = new Stopwatch();
 
@@ -324,7 +355,7 @@ namespace NeonatalPhysiologyEngine
                 s_modelCycle.Start();
 
                 // do the model cycle steps
-                ModelCycle();
+                ModelCycle(true);
 
                 // report the execution time of the model cycle
                 executionTimes.Add(s_modelCycle.ElapsedMilliseconds);
@@ -341,9 +372,16 @@ namespace NeonatalPhysiologyEngine
             modelInterface.StatusMessage = $"> Model step size         : {Math.Round(modelDefinition.modeling_stepsize * 1000,2)} ms.";
             modelInterface.StatusMessage = $"> Model run calculated in : {Math.Round(performance_total,3)} ms.";
             modelInterface.StatusMessage = $"> Average model step in   : {Math.Round(performance_step_mean,3)} ms.";
+
+            // restart the timer if it was already running.
+            if (modelingTimer != null)
+            {
+                modelingTimer.Change(0, (int)(modelDefinition.modeling_interval * 1000));
+            }
+            
         }
 
-        void ModelCycle()
+        void ModelCycle(object state)
         {
             // calculate the number of frames
             int frames = (int)(modelDefinition.modeling_interval / modelDefinition.modeling_stepsize);

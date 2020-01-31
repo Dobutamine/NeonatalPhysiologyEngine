@@ -31,7 +31,7 @@ namespace NeonatalPhysiologyEngine.IO
 
                 return jsonModel;
 
-            } catch (Exception ex)
+            } catch
             {
                 return null;
             }
@@ -54,7 +54,7 @@ namespace NeonatalPhysiologyEngine.IO
                 return jsonModel;
 
             }
-            catch (Exception ex)
+            catch
             {
                 return null;
             }
@@ -75,7 +75,7 @@ namespace NeonatalPhysiologyEngine.IO
                 System.IO.File.WriteAllText(filename, modelJson);
                 return true;
 
-            } catch (Exception ex)
+            } catch
             {
                 return false;
             }
