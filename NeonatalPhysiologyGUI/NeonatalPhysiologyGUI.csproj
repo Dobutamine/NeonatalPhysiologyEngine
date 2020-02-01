@@ -24,6 +24,7 @@
   <ItemGroup>
     <PackageReference Include="Extended.Wpf.Toolkit" Version="3.8.0" />
     <PackageReference Include="SkiaSharp.Views.WPF" Version="1.68.1.1" />
+    <PackageReference Include="ToggleSwitch" Version="1.1.2" />
   </ItemGroup>
 
   <ItemGroup>

@@ -13,54 +13,14 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
         // list of all compartmentn contained in this animated compartment
         public List<BloodCompartment> compartments = new List<BloodCompartment>();
 
-        double pumpLocation = 0;
+        SKPaint circleOut;
 
-        SKPaint circleOut = new SKPaint()
-        {
-            Style = SKPaintStyle.Stroke,
-            StrokeCap = SKStrokeCap.Round,
-            IsAntialias = true,
-            Color = SKColors.Orange,
-            StrokeWidth = 5,
-        };
+        SKPaint paint;
 
-        SKPaint pumpColorStroke = new SKPaint()
-        {
-            Style = SKPaintStyle.Stroke,
-            IsAntialias = false,
-            Color = SKColors.White,
-            StrokeWidth = 5,
-        };
+        SKPaint textPaint;
 
+        SKPaint textPaint2;
 
-        SKPaint paint = new SKPaint()
-        {
-            Style = SKPaintStyle.Fill,
-            IsAntialias = false,
-            Color = SKColors.Blue,
-            StrokeWidth = 10
-        };
-
-        SKPaint textPaint = new SKPaint
-        {
-            Typeface = SKTypeface.FromFamilyName("Arial Bold"),
-            Style = SKPaintStyle.Fill,
-            FakeBoldText = true,
-            IsAntialias = true,
-            Color = SKColors.White,
-            IsStroke = false,
-            TextSize = 20f
-        };
-        SKPaint textPaint2 = new SKPaint
-        {
-            Typeface = SKTypeface.FromFamilyName("Arial Bold"),
-            Style = SKPaintStyle.Fill,
-            FakeBoldText = true,
-            IsAntialias = true,
-            Color = SKColors.White,
-            IsStroke = false,
-            TextSize = 18f
-        };
         public float OffsetXFactor = 2.5f;
         public SKPoint offset = new SKPoint
         {
@@ -68,35 +28,26 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
             Y = 8
 
         };
-        SKRect mainRect = new SKRect(0, 0, 0, 0);
 
-        public SKPoint location = new SKPoint(0, 0);
-        public SKPoint locationOrigen = new SKPoint(0, 0);
-        public SKPoint locationTarget = new SKPoint(0, 0);
-        public SKPoint location1 = new SKPoint(0, 0);
-        public SKPoint location2 = new SKPoint(0, 0);
-        public SKPoint location3 = new SKPoint(0, 0);
-        public SKPoint location4 = new SKPoint(0, 0);
+        public string Name { get; set; } = "X";
+        public bool IsVisible { get; set; } = true;
+        public bool IsVessel { get; set; } = false;
 
-        public float scaleRelative = 50;
-        float scale = 1;
-        public float Degrees { get; set; } = 0;
-        public float StartAngle { get; set; } = 0;
-        public float EndAngle { get; set; } = 0;
+        public float ScaleRelative { get; set; } = 50;
+        public float Dpi { get; set; } = 1;
+        public float PositionInDegrees { get; set; } = 0;
+        public float StartInDegrees { get; set; } = 0;
+        public float EndInDegrees { get; set; } = 0;
         public float Direction { get; set; } = 1;
         public float Speed { get; set; } = 0.05f;
-        public bool IsVisible { get; set; } = true;
-
-        public bool IsVessel { get; set; } = false;
+      
         public float RadiusXOffset { get; set; } = 1;
         public float RadiusYOffset { get; set; } = 1;
-        public string Name { get; set; } = "X";
-
-        float dpi = 1;
+     
 
         public AnimatedBloodCompartment(float _dpi)
         {
-            dpi = _dpi;
+            Dpi = _dpi;
 
             circleOut = new SKPaint()
             {
@@ -104,14 +55,6 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
                 StrokeCap = SKStrokeCap.Round,
                 IsAntialias = true,
                 Color = SKColors.Orange,
-                StrokeWidth = 5,
-            };
-
-            pumpColorStroke = new SKPaint()
-            {
-                Style = SKPaintStyle.Stroke,
-                IsAntialias = false,
-                Color = SKColors.White,
                 StrokeWidth = 5,
             };
 
@@ -132,8 +75,9 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
                 IsAntialias = true,
                 Color = SKColors.White,
                 IsStroke = false,
-                TextSize = 14f * dpi
+                TextSize = 14f * Dpi
             };
+
             textPaint2 = new SKPaint
             {
                 Typeface = SKTypeface.FromFamilyName("Arial Bold"),
@@ -142,11 +86,12 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
                 IsAntialias = true,
                 Color = SKColors.White,
                 IsStroke = false,
-                TextSize = 12f * dpi
+                TextSize = 12f * Dpi
             };
 
             
         }
+
         public void AddCompartment(BloodCompartment c)
         {
             compartments.Add(c);
@@ -154,22 +99,19 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
 
         public void DrawCompartment(SKCanvas canvas, float _radX, float _radY)
         {
-            float totalVolume = 0;
-            float totalSpO2 = 0;
-            float radius = 0;
-
             
-            scale = _radX * scaleRelative;
-            radius = _radX / 2.5f;
+            float scale = _radX * ScaleRelative;
+            float radius = _radX / 2.5f;
 
             if (_radX > _radY)
             {
-                scale = _radY * scaleRelative;
+                scale = _radY * ScaleRelative;
                 radius = _radY / 2.5f;
             }
 
-
             // calculate the total volume and average spO2 if lumping is the case
+            float totalVolume = 0;
+            float totalSpO2 = 0;
             foreach (BloodCompartment c in compartments)
             {
                 totalVolume += (float)c.vol_current;
@@ -178,32 +120,25 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
 
             paint.Color = AnimatedElementHelper.CalculateBloodColor(totalSpO2 / compartments.Count);
 
-            float twidth = textPaint.MeasureText(Name);
-
-            // calculate position
-            location = AnimatedElementHelper.GetPosition(Degrees, radius, RadiusXOffset, RadiusYOffset);
-
-            // calculate position
-            locationOrigen = AnimatedElementHelper.GetPosition(StartAngle, radius, RadiusXOffset, RadiusYOffset);
-            locationTarget = AnimatedElementHelper.GetPosition(EndAngle, radius, RadiusXOffset, RadiusYOffset);
-
-            float left = (float)Math.Sin(270 * 0.0174532925) * RadiusXOffset * radius;
-            float right = (float)Math.Sin(90 * 0.0174532925) * RadiusXOffset * radius;
-            float top = (float)Math.Cos(180 * 0.0174532925) * RadiusYOffset * radius;
-            float bottom = (float)Math.Cos(0 * 0.0174532925) * RadiusYOffset * radius;
-
             float r = AnimatedElementHelper.RadiusCalculator(totalVolume, scale);
 
             if (IsVessel)
             {
-                mainRect.Left = left;
-                mainRect.Top = top;
-                mainRect.Right = right;
-                mainRect.Bottom = bottom;
+                // calculate position
+                SKPoint locationOrigen = AnimatedElementHelper.GetPosition(StartInDegrees, radius, RadiusXOffset, RadiusYOffset);
+                SKPoint locationTarget = AnimatedElementHelper.GetPosition(EndInDegrees, radius, RadiusXOffset, RadiusYOffset);
+
+                SKRect mainRect = new SKRect(0, 0, 0, 0)
+                {
+                    Left = (float)Math.Sin(270 * 0.0174532925) * RadiusXOffset * radius,
+                    Top = (float)Math.Cos(180 * 0.0174532925) * RadiusYOffset * radius,
+                    Right = (float)Math.Sin(90 * 0.0174532925) * RadiusXOffset * radius,
+                    Bottom = (float)Math.Cos(0 * 0.0174532925) * RadiusYOffset * radius
+                };
 
                 using (SKPath path = new SKPath())
                 {
-                    path.AddArc(mainRect, StartAngle, Math.Abs(StartAngle - EndAngle) * Direction);
+                    path.AddArc(mainRect, StartInDegrees, Math.Abs(StartInDegrees - EndInDegrees) * Direction);
                     circleOut.Color = paint.Color;
 
                     circleOut.StrokeWidth = r;
@@ -211,22 +146,19 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
 
                     offset.X = Math.Abs(locationOrigen.X - locationTarget.X) / OffsetXFactor;
                     canvas.DrawTextOnPath(Name, path, offset, textPaint2);
-
                 }
             }
             else
             {
+                // calculate position
+                SKPoint location = AnimatedElementHelper.GetPosition(PositionInDegrees, radius, RadiusXOffset, RadiusYOffset);
+
+                float twidth = textPaint.MeasureText(Name);
+
                 paint.StrokeWidth = 10;
                 canvas.DrawCircle(location, r, paint);
                 canvas.DrawText(Name, location.X - twidth / 2, location.Y + 7, textPaint);
-
-
             }
-
-
-
         }
-
-
     }
 }
