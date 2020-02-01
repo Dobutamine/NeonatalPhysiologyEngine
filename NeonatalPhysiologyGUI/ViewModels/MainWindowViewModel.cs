@@ -47,7 +47,7 @@ namespace NeonatalPhysiologyGUI.ViewModels
             {
                 Assembly _assembly = Assembly.GetExecutingAssembly();
 
-                using (var reader = new System.IO.StreamReader(_assembly.GetManifestResourceStream("NeonatalPhysiologyGUI.normal_neonate.json")))
+                using (var reader = new System.IO.StreamReader(_assembly.GetManifestResourceStream("NeonatalPhysiologyGUI.JSON.NormalNeonate.json")))
                 {
                     return reader.ReadToEnd();
                 };

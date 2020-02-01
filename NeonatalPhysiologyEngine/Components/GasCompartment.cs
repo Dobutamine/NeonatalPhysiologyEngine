@@ -44,6 +44,7 @@ namespace NeonatalPhysiologyEngine
         public double cco2 { get; set; }
         public double cother { get; set; }
         public double ch2o { get; set; }
+        public double to2 { get; set; }
 
         public double temp { get; set; }
         double gas_constant = 62.36367;
@@ -72,6 +73,7 @@ namespace NeonatalPhysiologyEngine
             {
                 patm = atmospheric_pressure;
                 pres_current = CalculatePressure();
+                to2 = po2;
             }
         }
 

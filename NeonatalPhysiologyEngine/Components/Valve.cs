@@ -24,8 +24,8 @@ namespace NeonatalPhysiologyEngine
         string comp1_name = "";
         string comp2_name = "";
 
-        public BloodCompartment comp1;
-        public BloodCompartment comp2;
+        public BloodCompartment comp1 { get; set; }
+        public BloodCompartment comp2 { get; set; }
 
         Model currentModel;
 

@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="normal_neonate.json">
+    <EmbeddedResource Include="JSON\NormalNeonate.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
@@ -36,5 +36,7 @@
       <HintPath>..\NeonatalPhysiologyEngine\bin\x64\Debug\netcoreapp3.1\NeonatalPhysiologyEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 
 </Project>
