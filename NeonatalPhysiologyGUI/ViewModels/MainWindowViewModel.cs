@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using NeonatalPhysiologyGUI.Helpers;
 
 namespace NeonatalPhysiologyGUI.ViewModels
 {
@@ -23,7 +24,7 @@ namespace NeonatalPhysiologyGUI.ViewModels
             if (filename == "")
             {
                 // load embedded file
-                string json_file = ProcessEmbeddedJSON();
+                string json_file = JSONHelpers.ProcessEmbeddedJSON("NeonatalPhysiologyGUI.JSON.NormalNeonate.json");
 
                 if (json_file == null)
                 {
@@ -41,23 +42,6 @@ namespace NeonatalPhysiologyGUI.ViewModels
             }
         }
         
-        string ProcessEmbeddedJSON()
-        {
-            try
-            {
-                Assembly _assembly = Assembly.GetExecutingAssembly();
-
-                using (var reader = new System.IO.StreamReader(_assembly.GetManifestResourceStream("NeonatalPhysiologyGUI.JSON.NormalNeonate.json")))
-                {
-                    return reader.ReadToEnd();
-                };
-            }
-            catch
-            {
-
-            }
-            return null;
-
-        }
+        
     }
 }
