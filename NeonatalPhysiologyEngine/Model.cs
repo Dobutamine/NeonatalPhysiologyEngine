@@ -48,6 +48,8 @@ namespace NeonatalPhysiologyEngine
 
         }
 
+        public bool ModelLoaded { get; set; } = false;
+
         public void LoadModelFromDisk(string filename)
         {
             modelDefinition = JSONIO.ImportPatientFromFileOnDisk(filename);
@@ -58,9 +60,13 @@ namespace NeonatalPhysiologyEngine
                 // initialize the loaded model
                 InitModel();
 
+                ModelLoaded = true;
+
             } else
             {
                 modelInterface.StatusMessage = $"Failed to import patient {filename}. {Environment.NewLine}";
+
+                ModelLoaded = true;
             }
             
         }
@@ -75,9 +81,13 @@ namespace NeonatalPhysiologyEngine
                 // initialize the loaded model
                 InitModel();
 
+                ModelLoaded = true;
+
             } else
             {
                 modelInterface.StatusMessage = $"Failed to import patient. {Environment.NewLine}";
+
+                ModelLoaded = false;
             }
         }
 

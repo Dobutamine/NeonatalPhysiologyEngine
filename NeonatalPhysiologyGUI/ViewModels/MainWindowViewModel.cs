@@ -13,35 +13,21 @@ namespace NeonatalPhysiologyGUI.ViewModels
 
         public MainWindowViewModel()
         {
+            // instantiate a new
             currentModel = new Model();
 
-            LoadModel();
+            currentModel.modelInterface.PropertyChanged += ModelInterface_PropertyChanged;
+
+            currentModel.LoadModelFromJSON(JSONHelpers.ProcessEmbeddedJSON("NeonatalPhysiologyGUI.JSON.NormalNeonate.json"));
 
         }
 
-        public void LoadModel(string filename = "")
+        private void ModelInterface_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (filename == "")
+            if (e.PropertyName == "StatusMessage")
             {
-                // load embedded file
-                string json_file = JSONHelpers.ProcessEmbeddedJSON("NeonatalPhysiologyGUI.JSON.NormalNeonate.json");
 
-                if (json_file == null)
-                {
-                    Console.WriteLine("Failed to process embedded JSON file.");
-                }
-                else
-                {
-                    currentModel.LoadModelFromJSON(json_file);
-                }
-
-            }
-            else
-            {
-                currentModel.LoadModelFromDisk(filename);
             }
         }
-        
-        
     }
 }
