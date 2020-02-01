@@ -14,10 +14,6 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
         public List<BloodConnector> connectors = new List<BloodConnector>();
         public BloodCompartment sizeCompartment;
 
-        SKRect mainRect = new SKRect(0, 0, 0, 0);
-
-        SKColor colorFrom;
-        SKColor colorTo;
 
 
         SKPaint circleOut;
@@ -26,44 +22,35 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
 
         SKPaint textPaint;
 
-        public SKPoint locationOrigen = new SKPoint(0, 0);
-        public SKPoint locationTarget = new SKPoint(0, 0);
-        public SKPoint location1 = new SKPoint(0, 0);
-        public SKPoint locationPump = new SKPoint(0, 0);
-
-        public float scaleRelative = 18;
-        float scale = 1;
+        public string Name { get; set; } = "";
+        public bool IsVisible = true;
+        public bool Gradient { get; set; } = false;
+        public float Dpi { get; set; } = 1f;
+        public float ScaleRelative { get; set; } = 18;
         public float Degrees { get; set; } = 0;
-        public float RadiusXOffset { get; set; } = 1;
-        public float RadiusYOffset { get; set; } = 1;
-
-        float currentAngle = 0;
         public float StartAngle { get; set; } = 0;
         public float EndAngle { get; set; } = 0;
         public float Direction { get; set; } = 1;
         public float Speed { get; set; } = 0.05f;
-
+        public float Width { get; set; } = 30;
         public float XOffset { get; set; } = 0;
         public float YOffset { get; set; } = 0;
+        public float RadiusXOffset { get; set; } = 1;
+        public float RadiusYOffset { get; set; } = 1;
 
-        public bool NoLoss { get; set; } = true;
-        public string Name { get; set; } = "";
-        public bool IsVisible = true;
-
-        public float Width { get; set; } = 30;
-        float StrokeWidth = 15;
-
-        public float AverageFlow { get; set; } = 0;
         int averageCounter = 0;
+        float averageFlow = 0;
         float tempAverageFlow = 0;
 
+        float strokeWidth = 15;
         float currentStrokeWidth = 0;
+        float currentAngle = 0;
         float strokeStepsize = 0.1f;
 
-        float dpi = 1f;
+        
         public AnimatedBloodConnector(float _dpi)
         {
-            dpi = _dpi;
+            Dpi = _dpi;
 
              circleOut = new SKPaint()
             {
@@ -90,12 +77,12 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
                 IsAntialias = true,
                 Color = SKColors.White,
                 IsStroke = false,
-                TextSize = 14f * dpi
+                TextSize = 14f * Dpi
 
 
             };
 
-            Width = 30 * dpi;
+            Width = 30 * Dpi;
         }
         public void AddConnector(BloodConnector c)
         {
@@ -112,12 +99,12 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
             float currentVolume = 0;
             float radius = 0;
 
-            scale = _radX * scaleRelative ;
+            float scale = _radX * ScaleRelative ;
             radius = _radX / 2.5f;
 
             if (_radX > _radY)
             {
-                scale = _radY * scaleRelative ;
+                scale = _radY * ScaleRelative ;
                 radius = _radY / 2.5f;
             }
 
@@ -129,34 +116,32 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
                 if (totalFlow >= 0)
                 {
                     totalSpO2 += (float)c.comp1.to2;
-                    if (NoLoss)
+                    if (Gradient)
                     {
                         totalSpO2From += (float)c.comp1.to2;
-                        totalSpO2To += (float)c.comp1.to2;
+                        totalSpO2To += (float)c.comp2.to2;
                     }
                     else
                     {
                         totalSpO2From += (float)c.comp1.to2;
-                        totalSpO2To += (float)c.comp2.to2;
+                        totalSpO2To += (float)c.comp1.to2;
                     }
                 }
                 else
                 {
                     totalSpO2 += (float)c.comp2.to2;
-                    if (NoLoss)
-                    {
-                        totalSpO2From += (float)c.comp2.to2;
-                        totalSpO2To += (float)c.comp2.to2;
-                    }
-                    else
+                    if (Gradient)
                     {
                         totalSpO2From += (float)c.comp2.to2;
                         totalSpO2To += (float)c.comp1.to2;
                     }
+                    else
+                    {
+                        totalSpO2From += (float)c.comp2.to2;
+                        totalSpO2To += (float)c.comp2.to2;
+                    }
 
                 }
-
-
             }
 
 
@@ -164,15 +149,15 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
 
             if (averageCounter > 100)
             {
-                AverageFlow = Math.Abs(tempAverageFlow) / averageCounter;
+                averageFlow = Math.Abs(tempAverageFlow) / averageCounter;
                 tempAverageFlow = 0;
                 averageCounter = 0;
             }
             averageCounter++;
 
 
-            colorTo = AnimatedElementHelper.CalculateBloodColor(totalSpO2To / connectors.Count);
-            colorFrom = AnimatedElementHelper.CalculateBloodColor(totalSpO2From / connectors.Count);
+            SKColor colorTo = AnimatedElementHelper.CalculateBloodColor(totalSpO2To / connectors.Count);
+            SKColor colorFrom = AnimatedElementHelper.CalculateBloodColor(totalSpO2From / connectors.Count);
 
             currentAngle += totalFlow * Direction;
             if (Math.Abs(currentAngle) > Math.Abs(StartAngle - EndAngle))
@@ -187,16 +172,16 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
             }
             else
             {
-                StrokeWidth = AverageFlow * Width;
-                if (StrokeWidth > 30) StrokeWidth = 30;
-                if (StrokeWidth < 2) StrokeWidth = 2;
+                strokeWidth = averageFlow * Width;
+                if (strokeWidth > 30) strokeWidth = 30;
+                if (strokeWidth < 2) strokeWidth = 2;
 
-                strokeStepsize = (StrokeWidth - currentStrokeWidth) / 10;
+                strokeStepsize = (strokeWidth - currentStrokeWidth) / 10;
                 currentStrokeWidth += strokeStepsize;
-                if (Math.Abs(currentStrokeWidth - StrokeWidth) < Math.Abs(strokeStepsize))
+                if (Math.Abs(currentStrokeWidth - strokeWidth) < Math.Abs(strokeStepsize))
                 {
                     strokeStepsize = 0;
-                    currentStrokeWidth = StrokeWidth;
+                    currentStrokeWidth = strokeWidth;
                 }
 
                 circleOut.StrokeWidth = currentStrokeWidth;
@@ -204,19 +189,13 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
 
 
             // calculate position
-            locationOrigen = AnimatedElementHelper.GetPosition(StartAngle, radius, RadiusXOffset, RadiusYOffset);
-            locationTarget = AnimatedElementHelper.GetPosition(EndAngle, radius, RadiusXOffset, RadiusYOffset);
-
-            float left = (float)Math.Sin(270 * 0.0174532925) * RadiusXOffset * radius + XOffset;
-            float right = (float)Math.Sin(90 * 0.0174532925) * RadiusXOffset * radius + XOffset;
-            float top = (float)Math.Cos(180 * 0.0174532925) * RadiusYOffset * radius + YOffset;
-            float bottom = (float)Math.Cos(0 * 0.0174532925) * RadiusYOffset * radius + YOffset;
-
-            mainRect.Left = left;
-            mainRect.Right = right;
-            mainRect.Top = top;
-            mainRect.Bottom = bottom;
-
+            SKRect mainRect = new SKRect(0, 0, 0, 0)
+            {
+                Left = (float)Math.Sin(270 * 0.0174532925) * RadiusXOffset * radius + XOffset,
+                Right = (float)Math.Sin(90 * 0.0174532925) * RadiusXOffset * radius + XOffset,
+                Top = (float)Math.Cos(180 * 0.0174532925) * RadiusYOffset * radius + YOffset,
+                Bottom = (float)Math.Cos(0 * 0.0174532925) * RadiusYOffset * radius + YOffset
+            };
 
             circleOut.Shader = SKShader.CreateSweepGradient(
                 new SKPoint(0f, 0f),
@@ -230,7 +209,7 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
                 canvas.DrawPath(path, circleOut);
             }
 
-            location1 = AnimatedElementHelper.GetPosition(StartAngle + currentAngle, radius, RadiusXOffset, RadiusYOffset);
+            SKPoint location1 = AnimatedElementHelper.GetPosition(StartAngle + currentAngle, radius, RadiusXOffset, RadiusYOffset);
             canvas.DrawCircle(location1.X + XOffset, location1.Y + YOffset, 7, paint);
 
 
