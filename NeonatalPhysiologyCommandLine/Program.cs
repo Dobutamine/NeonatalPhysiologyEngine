@@ -33,7 +33,7 @@ namespace NeonatalPhysiologyCommandLine
             if (filename == "" )
             {
                 // load embedded file
-                string json_file = ProcessEmbeddedJSON();
+                string json_file = GetEmbeddedJSON();
 
                 if (json_file == null)
                 {
@@ -49,7 +49,7 @@ namespace NeonatalPhysiologyCommandLine
                 test_model.LoadModelFromDisk(filename);
             }
         }
-        static string ProcessEmbeddedJSON()
+        static string GetEmbeddedJSON()
         {
             try
             {

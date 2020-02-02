@@ -7,6 +7,8 @@ using NeonatalPhysiologyGUI.Helpers;
 using NeonatalPhysiologyGUI.Views;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using NeonatalPhysiologyGUI.AnimatedDiagramComponents;
+using System.Text.Json;
 
 namespace NeonatalPhysiologyGUI.ViewModels
 {
@@ -18,8 +20,9 @@ namespace NeonatalPhysiologyGUI.ViewModels
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        // animated diagram visibility
+        // animated diagram
         AnimatedDiagram animatedDiagram;
+        AnimatedDiagramDefinition animatedDiagramDefinition;
         private bool diagramVisible = true;
         public bool DiagramVisible
         {
@@ -48,20 +51,27 @@ namespace NeonatalPhysiologyGUI.ViewModels
             set { additionalVisible = value; OnPropertyChanged(); }
         }
 
-
         Model currentModel;
-
-       
 
         public MainWindowViewModel(double _screen_x, double _screen_y, double _dpi)
         {
-            // instantiate a new
+            // instantiate a new model
             currentModel = new Model();
 
+            // add an event handler to track with the model
             currentModel.modelInterface.PropertyChanged += ModelInterface_PropertyChanged;
 
-            currentModel.LoadModelFromJSON(JSONHelpers.ProcessEmbeddedJSON("NeonatalPhysiologyGUI.JSON.NormalNeonate.json"));
+            // get the embedded JSON model configuration file
+            string embeddedJSONModel = JSIONIO.GetEmbeddedJSON("NeonatalPhysiologyGUI.JSON.NormalNeonate.json");
 
+            // pass the JSON file to the model to load it
+            currentModel.LoadModelFromJSON(embeddedJSONModel);
+
+            // get the embedded JSON animated model diagram definition
+            string embeddedJSONAdd = JSIONIO.GetEmbeddedJSON("NeonatalPhysiologyGUI.JSON.AnimatedDiagramLayout.json");
+
+            // load the animated diagram definition file
+            animatedDiagramDefinition = JSIONIO.LoadAnimatedDiagramDefinitionFromJSON(embeddedJSONAdd);
         }
 
         private void ModelInterface_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -75,8 +85,9 @@ namespace NeonatalPhysiologyGUI.ViewModels
         public void InitializeAnimatedDiagram(AnimatedDiagram p)
         {
             animatedDiagram = p;
-            animatedDiagram.UpdateSkeleton();
         }
+
+       
 
 
     }

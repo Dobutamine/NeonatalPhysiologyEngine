@@ -7,9 +7,6 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagramComponents
 {
     public class AnimatedDiagramDefinition
     {
-        public string Name { get; set; }
-        public string Test { get; set; }
-
-
+        public string name { get; set; }
     }
 }

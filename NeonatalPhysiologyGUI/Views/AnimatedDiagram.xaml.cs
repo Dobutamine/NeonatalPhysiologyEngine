@@ -28,9 +28,6 @@ namespace NeonatalPhysiologyGUI.Views
         SKCanvas mainCanvas;
         SKCanvas skeletonCanvas;
 
-        AnimatedDiagramDefinition animatedDiagramDefinition;
-
-
         readonly SKPaint skeletonPaint = new SKPaint()
         {
             Style = SKPaintStyle.Fill,
@@ -46,10 +43,6 @@ namespace NeonatalPhysiologyGUI.Views
             InitializeComponent();
 
             initialized = true;
-
-            string definition = LoadDiagramJSON();
-
-            animatedDiagramDefinition = ImportAnimatedDiagramFromText(definition);
 
         }
 
@@ -107,37 +100,6 @@ namespace NeonatalPhysiologyGUI.Views
 
         }
 
-        public string LoadDiagramJSON()
-        {
-            string definition = JSONHelpers.ProcessEmbeddedJSON("NeonatalPhysiologyGUI.JSON.AnimatedDiagramLayout.json");
-
-            return definition;
-
-        }
-
-
-        AnimatedDiagramDefinition ImportAnimatedDiagramFromText(string config_json)
-        {
-
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
-            };
-
-            try
-            {
-                var jsonModel = JsonSerializer.Deserialize<AnimatedDiagramDefinition>(config_json, options);
-
-                return jsonModel;
-
-            }
-            catch
-            {
-                return null;
-            }
-
-        }
     }
 
 
