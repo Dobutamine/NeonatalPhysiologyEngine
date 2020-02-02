@@ -25,9 +25,24 @@ namespace NeonatalPhysiologyGUI
         {
             InitializeComponent();
 
-            MainWindowViewModel mainWindowViewModel = new MainWindowViewModel();
+            // first find the properties of the current screen for adpative purposes
+            double screen_x = SystemParameters.PrimaryScreenWidth;
+            double screen_y = SystemParameters.PrimaryScreenHeight;
+            DpiScale dpi = VisualTreeHelper.GetDpi(this);
+            double dpi_scale = dpi.DpiScaleX;
 
+            // instatiate the mainwindow viewmodel
+            MainWindowViewModel mainWindowViewModel = new MainWindowViewModel(screen_x, screen_y, dpi_scale);
+
+            // set the datacontext
             this.DataContext = mainWindowViewModel;
+
+            // pass a reference to the animated diagram    
+            mainWindowViewModel.InitializeAnimatedDiagram(graphDiagram);
+
+           
+
+            
 
         }
     }

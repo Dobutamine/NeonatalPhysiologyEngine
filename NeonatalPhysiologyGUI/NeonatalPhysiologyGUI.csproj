@@ -12,10 +12,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="JSON\AnimatedDiagramLayout.json" />
     <None Remove="normal_neonate.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="JSON\AnimatedDiagramLayout.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="JSON\NormalNeonate.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>

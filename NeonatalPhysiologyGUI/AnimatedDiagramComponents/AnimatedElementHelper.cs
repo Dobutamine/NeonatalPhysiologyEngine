@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NeonatalPhysiologyGUI.AnimatedDiagram
+namespace NeonatalPhysiologyGUI.AnimatedDiagramAnimatedDiagramComponents
 {
     public static class AnimatedElementHelper
     {

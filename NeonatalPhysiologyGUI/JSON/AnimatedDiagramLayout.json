@@ -1,34 +1,5 @@
 ﻿{
-  "name": "normal neonatal circulation",
-  "bloodcompartments": [
-    {
-
-    }
-  ],
-  "gascompartments": [
-    {
-
-    }
-  ],
-  "bloodconnectors": [
-    {
-
-    }
-  ],
-  "shunts": [
-    {
-
-    }
-  ],
-  "valves": [
-    {
-
-    }
-  ],
-  "gasconnectors": [
-    {
-
-    }
-  ]
-
+  "Name": "ModelDefinition",
+  "Test": "TIMMIE"
 }
+

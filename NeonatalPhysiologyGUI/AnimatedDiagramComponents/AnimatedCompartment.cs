@@ -1,4 +1,5 @@
 ﻿using NeonatalPhysiologyEngine;
+using NeonatalPhysiologyGUI.AnimatedDiagramAnimatedDiagramComponents;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NeonatalPhysiologyGUI.AnimatedDiagram
+namespace NeonatalPhysiologyGUI.AnimatedDiagramComponents
 {
     public interface ICompartment
     {
@@ -36,8 +37,8 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
         };
 
         public string Name { get; set; } = "X";
-        public bool IsVisible { get; set; } = true;
-        public bool IsVessel { get; set; } = false;
+        public float IsVisible { get; set; } = 1f;
+        public float IsVessel { get; set; } = 0f;
 
         public float ScaleRelative { get; set; } = 50;
         public float Dpi { get; set; } = 1;
@@ -49,11 +50,11 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
       
         public float RadiusXOffset { get; set; } = 1;
         public float RadiusYOffset { get; set; } = 1;
-     
 
-        public AnimatedCompartment(float _dpi)
+        public string Compartments { get; set; } = "PA";
+
+        public AnimatedCompartment()
         {
-            Dpi = _dpi;
 
             circleOut = new SKPaint()
             {
@@ -126,7 +127,7 @@ namespace NeonatalPhysiologyGUI.AnimatedDiagram
 
             float r = AnimatedElementHelper.RadiusCalculator(totalVolume, scale);
 
-            if (IsVessel)
+            if (IsVessel == 1f)
             {
                 // calculate position
                 SKPoint locationOrigen = AnimatedElementHelper.GetPosition(StartInDegrees, radius, RadiusXOffset, RadiusYOffset);
