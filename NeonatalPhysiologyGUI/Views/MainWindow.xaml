@@ -25,6 +25,23 @@
             </StatusBarItem>
         </StatusBar>
 
+
+        <TextBlock Text="STATUS" Grid.Column="0" TextAlignment="Center" Foreground="Black" FontWeight="DemiBold" FontSize="14" Margin="0,25,0,0"></TextBlock>
+        <ScrollViewer Grid.Column="0"  Margin="0,50,5,25" VerticalScrollBarVisibility="Auto">
+            <StackPanel Grid.Column="2" Margin="0,0,5,0">
+                <Expander IsExpanded="{Binding StatusVisible, Mode=TwoWay}" Header="Status log" Background="DarkSlateGray" Padding="5,5,5,5" Margin="10,0,0,10"  Foreground="White" BorderThickness="0">
+                    <Border BorderBrush="Black" BorderThickness="1" CornerRadius="5" Background="Black" Margin="10,0,10,10">
+                        <Grid Margin="5,5,5,5" Background="Black" Opacity="1.0">
+                            <ListView BorderThickness="0" Background="Black" Foreground="White" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="150" ItemsSource="{Binding Status, Mode=OneWay}" VerticalAlignment="Top" FontSize="8" Margin="5,0,0,0"></ListView>
+                        </Grid>
+                    </Border>
+
+                </Expander>
+
+            </StackPanel>
+        </ScrollViewer>
+
+
         <TextBlock Text="MODEL GRAPHICS" Grid.Column="1" TextAlignment="Center" Foreground="Black" FontWeight="DemiBold" FontSize="14" Margin="0,25,0,0"></TextBlock>
         <ScrollViewer Grid.Column="1"  Margin="0,50,5,25" VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="10,0,10,0">

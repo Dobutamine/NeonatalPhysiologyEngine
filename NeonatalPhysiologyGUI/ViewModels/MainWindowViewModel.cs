@@ -51,6 +51,22 @@ namespace NeonatalPhysiologyGUI.ViewModels
             set { additionalVisible = value; OnPropertyChanged(); }
         }
 
+        private bool statusVisible = true;
+        public bool StatusVisible
+        {
+            get { return statusVisible; }
+            set { statusVisible = value; OnPropertyChanged(); }
+        }
+
+        private List<string> status = new List<string>();
+        public List<string> Status
+        {
+            get { return status; }
+            set { status = value; OnPropertyChanged(); }
+        }
+
+
+
         Model currentModel;
 
         public MainWindowViewModel(double _screen_x, double _screen_y, double _dpi)
@@ -78,7 +94,8 @@ namespace NeonatalPhysiologyGUI.ViewModels
         {
             if (e.PropertyName == "StatusMessage")
             {
-
+                Status.Insert(0, DateTime.Now + " : " + currentModel.modelInterface.StatusMessage.ToString());
+             
             }
         }
 
@@ -86,9 +103,6 @@ namespace NeonatalPhysiologyGUI.ViewModels
         {
             animatedDiagram = p;
         }
-
-       
-
 
     }
 }
