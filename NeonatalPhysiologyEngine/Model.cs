@@ -37,7 +37,7 @@ namespace NeonatalPhysiologyEngine
         public ECMOModel ecmo;
         public CompressionModel compressions;
 
-        public Model(string filename = "")
+        public Model()
         {
             // instantiate a model interface for this model instance which takes care of all communication with the outside world
             modelInterface = new ModelInterface(this)

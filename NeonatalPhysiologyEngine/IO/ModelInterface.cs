@@ -40,7 +40,6 @@ namespace NeonatalPhysiologyEngine.IO
 
                 _statusMessage = value;
                 OnPropertyChanged();
-                Console.WriteLine(StatusMessage);
             }
 
         }
