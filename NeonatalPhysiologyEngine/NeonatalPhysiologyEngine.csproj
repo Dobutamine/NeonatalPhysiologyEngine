@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <Authors>Timothy Antonius</Authors>
-    <Company>Woodlane ISS</Company>
+    <Company>Radboudumc</Company>
     <Description>.NET Core 2.1 class library for simulating fetal and neonatal physiology</Description>
-    <Platforms>AnyCPU;x64</Platforms>
+    <Platforms>x64</Platforms>
     <ApplicationIcon />
     <OutputType>Library</OutputType>
     <StartupObject></StartupObject>
