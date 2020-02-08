@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace NeonatalPhysiologyEngine
 {
@@ -50,7 +51,12 @@ namespace NeonatalPhysiologyEngine
 
         public bool ModelLoaded { get; set; } = false;
 
-        public void LoadModelFromDisk(string filename)
+        public async Task<bool> LoadModelFromDiskAsync(string file_name) => await Task.Run(() => { return LoadModelFromDisk(file_name); });
+        public async Task<bool> LoadModelFromJSONAsync(string json_file) => await Task.Run(() => { return LoadModelFromJSON(json_file); });
+        public async Task<bool> SaveModelToDiskAsync(string file_name) => await Task.Run(() => { return SaveModel(file_name); });
+        public async Task<string> CalculateModelAsync(int duration = 60) => await Task.Run(() => { return CalculateModel(duration); });
+
+        bool LoadModelFromDisk(string filename)
         {
             modelDefinition = JSONIO.ImportPatientFromFileOnDisk(filename);
 
@@ -68,10 +74,11 @@ namespace NeonatalPhysiologyEngine
 
                 ModelLoaded = true;
             }
+
+            return ModelLoaded;
             
         }
-
-        public void LoadModelFromJSON(string json_file)
+        bool LoadModelFromJSON(string json_file)
         {
             modelDefinition = JSONIO.ImportPatientFromText(json_file);
 
@@ -89,20 +96,25 @@ namespace NeonatalPhysiologyEngine
 
                 ModelLoaded = false;
             }
-        }
 
-        public void SaveModel(string filename)
+            return ModelLoaded;
+        }       
+        bool SaveModel(string filename)
         {
             if (JSONIO.ExportPatient(filename, modelDefinition) && modelDefinition != null)
             {
                 modelInterface.StatusMessage = $"Exported patient {filename}. {Environment.NewLine}";
+
+                return true;
+
             } else
             {
                 modelInterface.StatusMessage = $"Failed to export patient to {filename}. {Environment.NewLine}";
+
+                return false;
             }
             
         }
-
         public T FindModelComponent<T>(string comp_name)
         {
             foreach (BloodCompartment bloodComp in modelDefinition.blood_compartments)
@@ -181,8 +193,7 @@ namespace NeonatalPhysiologyEngine
 
             return (T)Convert.ChangeType(null, typeof(T));
 
-        }
-
+        }  
         public void InitModel()
         {
             // initialize all the model components and update the status message in de modelinterface class for notification purposes
@@ -306,7 +317,6 @@ namespace NeonatalPhysiologyEngine
             }
            
         }
-
         public void StartRealTimeModel()
         {
             // start the modeling timer if the model loaded correctly
@@ -327,7 +337,6 @@ namespace NeonatalPhysiologyEngine
                 modelingTimer = new Timer(ModelCycle, null, 0, modelTime);
             }
         }
-
         public void StopRealTimeModel()
         {
             // stop the modeling timer
@@ -337,9 +346,10 @@ namespace NeonatalPhysiologyEngine
                 modelingTimer.Dispose();
             }
         }
-
-        public void CalculateModel(int duration = 60)
+        string CalculateModel(int duration = 60)
         {
+            string report = $"";
+
             // first delay the realtime model
             if (modelingTimer != null)
             {
@@ -356,7 +366,7 @@ namespace NeonatalPhysiologyEngine
             int noNeededSteps = (int)(duration / modelDefinition.modeling_interval);
 
             // print a status message
-            modelInterface.StatusMessage = $"{Environment.NewLine}Calculating model for {duration} seconds in {noNeededSteps} steps. {Environment.NewLine}";
+            report += $"Calculating model for {duration} seconds in {noNeededSteps} steps. {Environment.NewLine}";
 
             // calculate the model steps
             for (int i = 0; i < noNeededSteps; i++)
@@ -378,10 +388,10 @@ namespace NeonatalPhysiologyEngine
             double performance_total = executionTimes.Sum();
             double performance_step_mean = executionTimes.Average();
 
-            modelInterface.StatusMessage = $"> Model step interval     : {Math.Round(modelDefinition.modeling_interval * 1000,2)} ms.";
-            modelInterface.StatusMessage = $"> Model step size         : {Math.Round(modelDefinition.modeling_stepsize * 1000,2)} ms.";
-            modelInterface.StatusMessage = $"> Model run calculated in : {Math.Round(performance_total,3)} ms.";
-            modelInterface.StatusMessage = $"> Average model step in   : {Math.Round(performance_step_mean,3)} ms.";
+            report += $"> Model step interval     : {Math.Round(modelDefinition.modeling_interval * 1000,2)} ms. {Environment.NewLine}";
+            report += $"> Model step size         : {Math.Round(modelDefinition.modeling_stepsize * 1000,2)} ms. {Environment.NewLine}";
+            report += $"> Model run calculated in : {Math.Round(performance_total,3)} ms.{Environment.NewLine}";
+            report += $"> Average model step in   : {Math.Round(performance_step_mean,3)} ms.{Environment.NewLine}";
 
             // restart the timer if it was already running.
             if (modelingTimer != null)
@@ -389,8 +399,8 @@ namespace NeonatalPhysiologyEngine
                 modelingTimer.Change(0, (int)(modelDefinition.modeling_interval * 1000));
             }
             
+            return report;
         }
-
         void ModelCycle(object state)
         {
             // calculate the number of frames
