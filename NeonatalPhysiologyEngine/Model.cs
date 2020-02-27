@@ -346,7 +346,7 @@ namespace NeonatalPhysiologyEngine
                 modelingTimer.Dispose();
             }
         }
-        string CalculateModel(int duration = 60)
+        string CalculateModel(int duration)
         {
             string report = $"";
 

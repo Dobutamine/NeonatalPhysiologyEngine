@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Authors>Timothy Antonius</Authors>
     <Company>Radboudumc</Company>
-    <Description>.NET Core 2.1 class library for simulating fetal and neonatal physiology</Description>
+    <Description>.NET Core 3.1 class library for simulating fetal and neonatal physiology</Description>
     <Platforms>x64</Platforms>
     <ApplicationIcon />
     <OutputType>Library</OutputType>
