@@ -1,0 +1,4 @@
+Build new DLL 
+
+dotnet build --output /Users/timothyantonius/Projects/explain/src/dotnet-app/dll
+

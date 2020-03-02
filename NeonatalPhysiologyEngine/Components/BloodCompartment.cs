@@ -23,13 +23,10 @@ namespace NeonatalPhysiologyEngine
         public double el_max_volume { get; set; }
         public double el_k1 { get; set; }
         public double el_k2 { get; set; }
-
         public double fvatp { get; set; }
         public double atp_factor { get; set; }
         public double to2 { get; set; }
         public double tco2 { get; set; }
-        
-
         public double ph { get; set; }
         public double po2 { get; set; }
         public double pco2 { get; set; }

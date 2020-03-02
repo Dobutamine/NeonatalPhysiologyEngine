@@ -16,7 +16,6 @@ namespace NeonatalPhysiologyEngine
     {
         // declare the main modeling timer
         Timer modelingTimer;
-
         public ModelDefinition modelDefinition;
         public ModelInterface modelInterface;
         public DataCollector dataCollector;
@@ -37,7 +36,6 @@ namespace NeonatalPhysiologyEngine
         public MaternalPlacentaModel maternalPlacenta;
         public ECMOModel ecmo;
         public CompressionModel compressions;
-
         public Model()
         {
             // instantiate a model interface for this model instance which takes care of all communication with the outside world
@@ -48,9 +46,7 @@ namespace NeonatalPhysiologyEngine
             };
 
         }
-
         public bool ModelLoaded { get; set; } = false;
-
         public async Task<bool> LoadModelFromDiskAsync(string file_name) => await Task.Run(() => { return LoadModelFromDisk(file_name); });
         public async Task<bool> LoadModelFromJSONAsync(string json_file) => await Task.Run(() => { return LoadModelFromJSON(json_file); });
         public async Task<bool> SaveModelToDiskAsync(string file_name) => await Task.Run(() => { return SaveModel(file_name); });
