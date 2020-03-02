@@ -52,17 +52,31 @@ namespace NeonatalPhysiologyEngine.IO
         public ModelInterface(Model cm) => currentModel = cm;
 
         public async Task<string> GetCompartmentVolumesAsync(int id = 1) => await Task.Run(() => { 
-            Dictionary<string,double> myDictionary = new Dictionary<string, double>();
+            Dictionary<string,double> _volumes = new Dictionary<string, double>();
             foreach (BloodCompartment bc in currentModel.modelDefinition.blood_compartments)
             {
-                myDictionary.Add(bc.name, bc.vol_current);        
+                _volumes.Add(bc.name, bc.vol_current);        
             }
             foreach (GasCompartment gc in currentModel.modelDefinition.gas_compartments)
             {
-                myDictionary.Add(gc.name, gc.vol_current);        
+                _volumes.Add(gc.name, gc.vol_current);        
             }
-            return JsonConvert.SerializeObject( myDictionary );
-        });        
+            return JsonConvert.SerializeObject( _volumes );
+        });
+
+        public async Task<string> GetConnectorFlowsAsync(int id = 1) => await Task.Run(() => { 
+            Dictionary<string,double> _flows = new Dictionary<string, double>();
+            foreach (BloodConnector bc in currentModel.modelDefinition.blood_connectors)
+            {
+                _flows.Add(bc.name, bc.real_flow);        
+            }
+            foreach (GasConnector gc in currentModel.modelDefinition.gas_connectors)
+            {
+                _flows.Add(gc.name, gc.real_flow);        
+            }
+            return JsonConvert.SerializeObject( _flows );
+        });  
+
     }
 
 }
