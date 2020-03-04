@@ -76,12 +76,15 @@ namespace NeonatalPhysiologyEngine.Models
             d_map_venpool = t * ((1 / currentModel.modelDefinition.ans["tc_map_venpool"]) * (-d_map_venpool + a_map)) + d_map_venpool;
             d_map_res = t * ((1 / currentModel.modelDefinition.ans["tc_map_res"]) * (-d_map_res + a_map)) + d_map_res;
 
-            // # calculate the heartrate 
-            currentModel.modelDefinition.ecg["heart_rate"] = 60000.0 / ((60000.0 / currentModel.modelDefinition.ecg["heart_rate_ref"]) + currentModel.modelDefinition.ans["g_map_hp"] * d_map_hp + currentModel.modelDefinition.ans["g_pco2_hp"] * d_pco2_hp + currentModel.modelDefinition.ans["g_po2_hp"] * d_po2_hp + currentModel.modelDefinition.ans["g_lungvol_hp"] * d_lungvol_hp);
+            if (currentModel.modelDefinition.ans["ans_enabled"] == 1)
+            {
+                // # calculate the heartrate 
+                currentModel.modelDefinition.ecg["heart_rate"] = 60000.0 / ((60000.0 / currentModel.modelDefinition.ecg["heart_rate_ref"]) + currentModel.modelDefinition.ans["g_map_hp"] * d_map_hp + currentModel.modelDefinition.ans["g_pco2_hp"] * d_pco2_hp + currentModel.modelDefinition.ans["g_po2_hp"] * d_po2_hp + currentModel.modelDefinition.ans["g_lungvol_hp"] * d_lungvol_hp);
 
-            // calculate the target exhaled minute volume 
-            currentModel.modelDefinition.breathing["target_minute_volume"] = currentModel.modelDefinition.breathing["ref_minute_volume"] + currentModel.modelDefinition.ans["g_ph_ve"] * d_ph_ve + currentModel.modelDefinition.ans["g_pco2_ve"] * d_pco2_ve + currentModel.modelDefinition.ans["g_po2_ve"] * d_po2_ve;
-
+                // calculate the target exhaled minute volume 
+                currentModel.modelDefinition.breathing["target_minute_volume"] = currentModel.modelDefinition.breathing["ref_minute_volume"] + currentModel.modelDefinition.ans["g_ph_ve"] * d_ph_ve + currentModel.modelDefinition.ans["g_pco2_ve"] * d_pco2_ve + currentModel.modelDefinition.ans["g_po2_ve"] * d_po2_ve;
+            }
+           
         }
 
         double ActivationCurve(double value, double saturation, double operating_point, double threshold)

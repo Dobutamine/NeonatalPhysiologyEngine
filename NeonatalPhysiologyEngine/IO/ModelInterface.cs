@@ -10,7 +10,7 @@ namespace NeonatalPhysiologyEngine.IO
 {
     public class ModelInterface : INotifyPropertyChanged
     {
-        bool tester = true;
+  
         public event PropertyChangedEventHandler PropertyChanged;
         void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
