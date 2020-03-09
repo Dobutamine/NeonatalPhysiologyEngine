@@ -349,7 +349,10 @@ namespace NeonatalPhysiologyEngine
             // first delay the realtime model
             if (modelingTimer != null)
             {
-                modelingTimer.Change(0, duration * 1000);
+                // restart the modeling timer
+                modelingTimer.Dispose();
+                int modelTime = (int)(duration * 1000);
+                modelingTimer = new Timer(ModelCycle, null, 0, modelTime);
             }
 
             // declare a stopwatch to measure the execution times

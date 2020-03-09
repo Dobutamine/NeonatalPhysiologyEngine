@@ -10,7 +10,7 @@ namespace NeonatalPhysiologyEngine.IO
 {
     public class ModelInterface : INotifyPropertyChanged
     {
-  
+        
         public event PropertyChangedEventHandler PropertyChanged;
         void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -31,7 +31,7 @@ namespace NeonatalPhysiologyEngine.IO
 
             }
         }
-
+        
         FormattableString _statusMessage;
         public FormattableString StatusMessage
         {
@@ -44,39 +44,67 @@ namespace NeonatalPhysiologyEngine.IO
                 _statusMessage = value;
                 OnPropertyChanged();
             }
-
         }
 
         Model currentModel;
 
-        public ModelInterface(Model cm) => currentModel = cm;
+        public ModelInterface(Model cm)
+        {
+            currentModel = cm;
+        }
 
-        public async Task<string> GetCompartmentVolumesAsync(int id = 1) => await Task.Run(() => { 
-            Dictionary<string,double> _volumes = new Dictionary<string, double>();
-            foreach (BloodCompartment bc in currentModel.modelDefinition.blood_compartments)
+        public Task<string> GetModelStateAsync(int id = 1) 
+        {
+            return Task.Run(() =>
             {
-                _volumes.Add(bc.name, bc.vol_current);        
-            }
-            foreach (GasCompartment gc in currentModel.modelDefinition.gas_compartments)
-            {
-                _volumes.Add(gc.name, gc.vol_current);        
-            }
-            return JsonConvert.SerializeObject( _volumes );
-        });
+                Dictionary<string,double[]> _data = new Dictionary<string, double[]>();
+                
+                _data.Add("heart_rate", new double[] {currentModel.modelDefinition.ecg["heart_rate"]});
 
-        public async Task<string> GetConnectorFlowsAsync(int id = 1) => await Task.Run(() => { 
-            Dictionary<string,double> _flows = new Dictionary<string, double>();
-            foreach (BloodConnector bc in currentModel.modelDefinition.blood_connectors)
-            {
-                _flows.Add(bc.name, bc.real_flow);        
-            }
-            foreach (GasConnector gc in currentModel.modelDefinition.gas_connectors)
-            {
-                _flows.Add(gc.name, gc.real_flow);        
-            }
-            return JsonConvert.SerializeObject( _flows );
-        });  
+                _data.Add("ecg_signal", new double[] {currentModel.modelDefinition.ecg["ecg_signal"]});
 
+                foreach (BloodCompartment bc in currentModel.modelDefinition.blood_compartments)
+                {
+                    double[] newValue_bc = {bc.vol_current, bc.to2 };
+                    _data.Add(bc.name, newValue_bc);        
+                }
+                foreach (GasCompartment gc in currentModel.modelDefinition.gas_compartments)
+                {
+                    double[] newValue_gc = {gc.vol_current, gc.to2 };
+                    _data.Add(gc.name, newValue_gc);        
+                }
+
+                foreach (BloodConnector bcc in currentModel.modelDefinition.blood_connectors)
+                {
+                    double[] newValue_bcc = {bcc.real_flow };
+                    _data.Add(bcc.name, newValue_bcc);        
+                }
+                foreach (Valve valve in currentModel.modelDefinition.valves)
+                {
+                    double[] newValue_valve = {valve.real_flow };
+                    _data.Add(valve.name, newValue_valve);        
+                }
+                foreach (Shunt shunt in currentModel.modelDefinition.shunts)
+                {
+                    double[] newValue_shunt = {shunt.real_flow };
+                    _data.Add(shunt.name, newValue_shunt);        
+                }
+                foreach (GasConnector gcc in currentModel.modelDefinition.gas_connectors)
+                {
+                    double[] newValue_gcc = {gcc.real_flow };
+                    _data.Add(gcc.name, newValue_gcc);        
+                }
+                
+                return JsonConvert.SerializeObject( _data );
+            });     
+        }
+      
+      
+            
+   
+
+
+       
     }
 
 }
