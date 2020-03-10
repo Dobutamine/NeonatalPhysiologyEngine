@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -53,45 +54,71 @@ namespace NeonatalPhysiologyEngine.IO
             currentModel = cm;
         }
 
-        public Task<string> GetModelStateAsync(int id = 1) 
+        public Task<string> GetModelStatusMessageAsync()
+        {
+            return Task.Run(() =>
+            {
+               return JsonConvert.SerializeObject( currentModel.modelInterface.StatusMessage );
+            });
+        }
+
+        public Task<string> GetModelStateAsync() 
         {
             return Task.Run(() =>
             {
                 Dictionary<string,double[]> _data = new Dictionary<string, double[]>();
                 
-                _data.Add("heart_rate", new double[] {currentModel.modelDefinition.ecg["heart_rate"]});
+                // monitor signals
+                _data.Add("heart_rate", new double[] {Math.Round(currentModel.modelDefinition.ecg["heart_rate"], 0)});
 
                 _data.Add("ecg_signal", new double[] {currentModel.modelDefinition.ecg["ecg_signal"]});
 
+                _data.Add("abp_systole", new double[] {Math.Round(currentModel.dataCollector.abp_systole,1)});
+
+                _data.Add("abp_diastole", new double[] {Math.Round(currentModel.dataCollector.abp_diastole,1)});
+
+                _data.Add("pap_systole", new double[] {Math.Round(currentModel.dataCollector.pap_systole,1)});
+
+                _data.Add("pap_diastole", new double[] {Math.Round(currentModel.dataCollector.pap_diastole,1)});
+
+                _data.Add("et_co2", new double[] {Math.Round(currentModel.dataCollector.et_co2,1)});
+
+                _data.Add("spo2_pre", new double[] {Math.Round(currentModel.dataCollector.spo2_pre,2)});
+
+                _data.Add("spo2_post", new double[] {Math.Round(currentModel.dataCollector.spo2_post,2)});
+
+                _data.Add("resp_rate", new double[] {Math.Round(currentModel.dataCollector.resp_rate,1)});
+
+                // blood compartment signals
                 foreach (BloodCompartment bc in currentModel.modelDefinition.blood_compartments)
                 {
-                    double[] newValue_bc = {bc.vol_current, bc.to2 };
+                    double[] newValue_bc = {Math.Round(bc.vol_current,2), Math.Round(bc.pres_current), Math.Round(bc.to2,2) };
                     _data.Add(bc.name, newValue_bc);        
                 }
                 foreach (GasCompartment gc in currentModel.modelDefinition.gas_compartments)
                 {
-                    double[] newValue_gc = {gc.vol_current, gc.to2 };
+                    double[] newValue_gc = {Math.Round(gc.vol_current,2 ), Math.Round(gc.to2,2), Math.Round(gc.pco2,2) };
                     _data.Add(gc.name, newValue_gc);        
                 }
 
                 foreach (BloodConnector bcc in currentModel.modelDefinition.blood_connectors)
                 {
-                    double[] newValue_bcc = {bcc.real_flow };
+                    double[] newValue_bcc = {Math.Round(bcc.real_flow,2) };
                     _data.Add(bcc.name, newValue_bcc);        
                 }
                 foreach (Valve valve in currentModel.modelDefinition.valves)
                 {
-                    double[] newValue_valve = {valve.real_flow };
+                    double[] newValue_valve = {Math.Round(valve.real_flow,2) };
                     _data.Add(valve.name, newValue_valve);        
                 }
                 foreach (Shunt shunt in currentModel.modelDefinition.shunts)
                 {
-                    double[] newValue_shunt = {shunt.real_flow };
+                    double[] newValue_shunt = {Math.Round(shunt.real_flow,2) };
                     _data.Add(shunt.name, newValue_shunt);        
                 }
                 foreach (GasConnector gcc in currentModel.modelDefinition.gas_connectors)
                 {
-                    double[] newValue_gcc = {gcc.real_flow };
+                    double[] newValue_gcc = {Math.Round(gcc.real_flow,2) };
                     _data.Add(gcc.name, newValue_gcc);        
                 }
                 

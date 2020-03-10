@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace NeonatalPhysiologyEngine.IO
@@ -59,18 +60,39 @@ namespace NeonatalPhysiologyEngine.IO
         RespirationData respirationData = new RespirationData();
         LungData lungData = new LungData();
         LabData labData = new LabData();
-        VitalsData vitalsData = new VitalsData();
+        public VitalsData vitalsData = new VitalsData();
         ECGData ecgData = new ECGData();
         ECMOData ecmoData = new ECMOData();
         ANSData ansData = new ANSData();
 
         double current_running_time = 0;
 
-        double update_counter_interval = 0;
+        double update_counter_stepsize = 0;
+        double update_counter_interval_1sec = 0;
+        double update_counter_interval_3sec = 0;
+        double update_counter_interval_5sec = 0;
+        double update_counter_interval_10sec = 0;
 
-        double update_counter_sec = 0;
+        public double spo2_pre = 0;
+        public double spo2_post = 0;
+        public double abp_systole = 0;
+        double temp_abp_systole = -1000;
+        public double abp_diastole = 0;
+        double temp_abp_diastole = 1000;
 
-        public bool Recording { get; set; } = true;
+        public double pap_systole = 0;
+        double temp_pap_systole = -1000;
+        public double pap_diastole = 0;
+        double temp_pap_diastole = 1000;
+
+        public double et_co2 = 0;
+        double temp_etco2 = -1000;
+
+        public double resp_rate = 0;
+
+
+
+        public bool Recording { get; set; } = false;
 
         public DataCollector(Model cm)
         {
@@ -142,49 +164,117 @@ namespace NeonatalPhysiologyEngine.IO
         {
             if (Recording)
             {
+                // store data with a stepsize interval
+                if (update_counter_stepsize > 1.0)
+                {
+                    
+                    update_counter_stepsize = 0;
+                }
+
                 // store data with a 1.0 second interval
-                if (update_counter_sec > 1.0)
+                if (update_counter_interval_1sec > 1.0)
                 {
-
-                    UpdateHemodynamicData();
-
-                    UpdateRespirationData();
-
-                    UpdateLabData();
-
-                    UpdateVitalsData();
-
-                    UpdateECMOData();
-
-                    update_counter_sec = 0;
+                    
+                    update_counter_interval_1sec = 0;
                 }
 
-                // store data with a <modeling_interval> interval
-                if (update_counter_interval > currentModel.modelDefinition.modeling_interval)
+                 // store data with a 3.0 second interval
+                if (update_counter_interval_3sec > 3.0)
                 {
-                    UpdateECGData();
+                    et_co2 = temp_etco2;
+                    temp_etco2 = -1000;
+                    update_counter_interval_3sec = 0;
 
-                    UpdateANSData();
+                    abp_systole = temp_abp_systole;
+                    temp_abp_systole = -1000;
 
-                    update_counter_interval = 0;
+                    abp_diastole = temp_abp_diastole;
+                    temp_abp_diastole = 1000;
+
+                    pap_systole = temp_pap_systole;
+                    temp_pap_systole = -1000;
+                    
+                    pap_diastole = temp_pap_diastole;
+                    temp_pap_diastole = 1000;
+
+                    spo2_pre = AA.so2;
+
+                    spo2_post = AD.so2;
+
+                    if (currentModel.modelDefinition.breathing["spont_breathing_enabled"] == 1){
+                        resp_rate = currentModel.modelDefinition.breathing["spont_resp_rate"];
+                    }
+
+                    if (currentModel.modelDefinition.ventilator["ventilator_enabled"] == 1){
+                        resp_rate = 60.0 / (currentModel.modelDefinition.breathing["t_in"] + currentModel.modelDefinition.breathing["t_ex"]);
+                    }
+
+                    update_counter_interval_3sec = 0;
+                }
+
+                 // store data with a 5.0 second interval
+                if (update_counter_interval_5sec > 1.0)
+                {
+                    
+                    update_counter_interval_5sec = 0;
+                }
+
+                 // store data with a 10 second interval
+                if (update_counter_interval_10sec > 1.0)
+                {
+                    
+                    update_counter_interval_10sec = 0;
+                }
+                
+                if (AA.pres_current > temp_abp_systole)
+                {
+                    temp_abp_systole = AA.pres_current;
+                }
+
+                if (AA.pres_current < temp_abp_diastole)
+                {
+                    temp_abp_diastole = AA.pres_current;
+                }
+
+                if (PA.pres_current > temp_pap_systole)
+                {
+                    temp_pap_systole = PA.pres_current;
+                }
+
+                if (PA.pres_current < temp_pap_diastole)
+                {
+                    temp_pap_diastole = PA.pres_current;
+                }
+
+                if (NCA.pco2 > temp_etco2)
+                {
+                    temp_etco2 = NCA.pco2;
                 }
 
 
-                // store data with a <modeling_stepsize> interval
-
-                UpdateCirculationData();
-
-                UpdateLungData();
 
                 // increase the running time with a <modeling_stepsize> step
                 current_running_time += currentModel.modelDefinition.modeling_stepsize;
 
                 // increase the update counters
-                update_counter_interval += currentModel.modelDefinition.modeling_stepsize;
-                update_counter_sec += currentModel.modelDefinition.modeling_stepsize;
+                update_counter_stepsize += currentModel.modelDefinition.modeling_stepsize;
+                update_counter_interval_1sec += currentModel.modelDefinition.modeling_stepsize;
+                update_counter_interval_3sec += currentModel.modelDefinition.modeling_stepsize;
+                update_counter_interval_5sec += currentModel.modelDefinition.modeling_stepsize;
+                update_counter_interval_10sec += currentModel.modelDefinition.modeling_stepsize;
+
             }
          
         }
+    
+       public void FindMinMax()
+       {
+           if (AA.pres_current > temp_abp_systole)
+           {
+               temp_abp_systole = AA.pres_current;
+           }
+           
+       }
 
         public void ResetData()
         {
@@ -197,7 +287,6 @@ namespace NeonatalPhysiologyEngine.IO
             ECGData ecgData = new ECGData();
             ECMOData ecmoData = new ECMOData();
             ANSData ansData = new ANSData();
-
         }
 
         void UpdateECGData()
@@ -214,34 +303,69 @@ namespace NeonatalPhysiologyEngine.IO
 
         }
 
+        void UpdateVitalsData()
+        {
+            vitalsData.arterial_diastole.Add(abp_diastole);
+            vitalsData.arterial_systole.Add(abp_systole);
+            vitalsData.pap_diastole.Add(pap_diastole);
+            vitalsData.pap_systole.Add(pap_systole);
+            vitalsData.endtidal_co2.Add(et_co2);
+
+            if (labData.arterial_so2.Count > 0)
+            {
+                vitalsData.so2_pre.Add(labData.arterial_so2.Last());
+
+            } else {
+
+                vitalsData.so2_pre.Add(0);
+            }
+
+            if (currentModel.modelDefinition.breathing["spont_breathing_enabled"] == 1)
+            {
+                vitalsData.resp_rate.Add(currentModel.modelDefinition.breathing["spont_resp_rate"]);
+            }
+
+            if (currentModel.modelDefinition.ventilator["ventilator_enabled"] == 1)
+            {   
+                var rate = 60 / ( currentModel.modelDefinition.ventilator["t_in"] + currentModel.modelDefinition.ventilator["t_ex"]);
+
+                vitalsData.resp_rate.Add(rate);
+            }
+            
+        }
+
         void UpdateCirculationData()
         {
-            circulationData.time.Add(current_running_time);
+          
+            // we try to make a shifting frame of circulation data
+                circulationData.time.Add(current_running_time);
+                circulationData.lv_pres.Add(LV.pres_current);
+                circulationData.rv_pres.Add(RV.pres_current);
+                circulationData.la_pres.Add(LA.pres_current);
+                circulationData.ra_pres.Add(RA.pres_current);
+                circulationData.aa_pres.Add(AA.pres_current);
+                circulationData.pa_pres.Add(PA.pres_current);
 
-            circulationData.lv_pres.Add(LV.pres_current);
-            circulationData.rv_pres.Add(RV.pres_current);
-            circulationData.la_pres.Add(LA.pres_current);
-            circulationData.ra_pres.Add(RA.pres_current);
-            circulationData.aa_pres.Add(AA.pres_current);
-            circulationData.pa_pres.Add(PA.pres_current);
+                circulationData.lv_vol.Add(LV.vol_current);
+                circulationData.rv_vol.Add(RV.vol_current);
+                circulationData.la_vol.Add(LA.vol_current);
+                circulationData.ra_vol.Add(RA.vol_current);
 
-            circulationData.lv_vol.Add(LV.vol_current);
-            circulationData.rv_vol.Add(RV.vol_current);
-            circulationData.la_vol.Add(LA.vol_current);
-            circulationData.ra_vol.Add(RA.vol_current);
+                circulationData.lv_aa_flow.Add(LV_AA.real_flow);
+                circulationData.la_lv_flow.Add(LA_LV.real_flow);
+                circulationData.rv_pa_flow.Add(RV_PA.real_flow);
+                circulationData.ra_rv_flow.Add(RA_RV.real_flow);
+                circulationData.ivc_flow.Add(IVC_RA.real_flow);
+                circulationData.svc_flow.Add(SVC_RA.real_flow);
 
-            circulationData.lv_aa_flow.Add(LV_AA.real_flow);
-            circulationData.la_lv_flow.Add(LA_LV.real_flow);
-            circulationData.rv_pa_flow.Add(RV_PA.real_flow);
-            circulationData.ra_rv_flow.Add(RA_RV.real_flow);
-            circulationData.ivc_flow.Add(IVC_RA.real_flow);
-            circulationData.svc_flow.Add(SVC_RA.real_flow);
 
         }
 
         void UpdateLabData()
         {
-
+        
+            
+    
         }
 
         void UpdateECMOData()
@@ -249,10 +373,7 @@ namespace NeonatalPhysiologyEngine.IO
 
         }
 
-        void UpdateVitalsData()
-        {
-
-        }
+        
 
         void UpdateLungData()
         {
@@ -261,7 +382,7 @@ namespace NeonatalPhysiologyEngine.IO
 
         void UpdateHemodynamicData()
         {
-
+            
         }
 
         void UpdateRespirationData()
@@ -363,6 +484,7 @@ namespace NeonatalPhysiologyEngine.IO
         public List<double> arterial_be = new List<double>();
         public List<double> alveolar_po2 = new List<double>();
         public List<double> alveolar_pco2 = new List<double>();
+         public List<double> end_tidal_pco2 = new List<double>();
 
         public List<double> arterial_so2 = new List<double>();
         public List<double> venous_so2 = new List<double>();
@@ -382,6 +504,8 @@ namespace NeonatalPhysiologyEngine.IO
         public List<double> so2_post = new List<double>();
         public List<double> arterial_systole = new List<double>();
         public List<double> arterial_diastole = new List<double>();
+         public List<double> pap_systole = new List<double>();
+        public List<double> pap_diastole = new List<double>();
         public List<double> cvp = new List<double>();
         public List<double> endtidal_co2 = new List<double>();
         public List<double> temperature = new List<double>();
