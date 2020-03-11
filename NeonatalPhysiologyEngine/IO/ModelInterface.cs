@@ -89,10 +89,26 @@ namespace NeonatalPhysiologyEngine.IO
 
                 _data.Add("resp_rate", new double[] {Math.Round(currentModel.dataCollector.resp_rate,1)});
 
+                _data.Add("temp", new double[] {Math.Round(currentModel.modelDefinition.metabolism["body_temp"], 1)});
+
+                 _data.Add("art_ph", new double[] {Math.Round(currentModel.dataCollector.art_ph,2)});
+
+                 _data.Add("art_po2", new double[] {Math.Round(currentModel.dataCollector.art_po2,1)});
+
+                 _data.Add("art_pco2", new double[] {Math.Round(currentModel.dataCollector.art_pco2,1)});
+
+                 _data.Add("art_hco3", new double[] {Math.Round(currentModel.dataCollector.art_hco3,0)});
+
+                 _data.Add("art_be", new double[] {Math.Round(currentModel.dataCollector.art_be,1)});
+
+                 _data.Add("art_lactate", new double[] {Math.Round(currentModel.dataCollector.art_lactate,1)});
+
+
+
                 // blood compartment signals
                 foreach (BloodCompartment bc in currentModel.modelDefinition.blood_compartments)
                 {
-                    double[] newValue_bc = {Math.Round(bc.vol_current,2), Math.Round(bc.pres_current), Math.Round(bc.to2,2) };
+                    double[] newValue_bc = {Math.Round(bc.vol_current,2), Math.Round(bc.pres_current, 2), Math.Round(bc.to2,2) };
                     _data.Add(bc.name, newValue_bc);        
                 }
                 foreach (GasCompartment gc in currentModel.modelDefinition.gas_compartments)

@@ -90,6 +90,15 @@ namespace NeonatalPhysiologyEngine.IO
 
         public double resp_rate = 0;
 
+        public double art_ph = 0;
+        public double art_po2 = 0;
+        public double art_pco2 = 0;
+        public double art_hco3 = 0;
+        public double art_be = 0;
+        public double art_lactate = 0;
+
+
+
 
 
         public bool Recording { get; set; } = false;
@@ -174,6 +183,12 @@ namespace NeonatalPhysiologyEngine.IO
                 // store data with a 1.0 second interval
                 if (update_counter_interval_1sec > 1.0)
                 {
+                    art_ph = AA.ph;
+                    art_po2 = AA.po2;
+                    art_pco2 = AA.pco2;
+                    art_hco3 = AA.hco3;
+                    art_be = AA.be;
+                    art_lactate = 2.0;
                     
                     update_counter_interval_1sec = 0;
                 }
