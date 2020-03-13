@@ -11,8 +11,10 @@ namespace NeonatalPhysiologyEngine
         public double vol_unstressed { get; set; }
         public double vol_unstressed_baseline { get; set; }
         public double vol_current { get; set; }
+        public double[] volumes { get; set; }
         public double vol_current_baseline { get; set; }
         public double pres_current { get; set; }
+        public double[] pressures { get; set; }
         public double container_pressure { get; set; }
         public double external_pressure { get; set; }
         public double el_baseline { get; set; }
@@ -45,6 +47,10 @@ namespace NeonatalPhysiologyEngine
         public double error_counter { get; set; }
         public double prev_so2 { get; set; }
 
+        public int number_of_steps = 15;
+
+        int history_counter = 0;
+
         Model currentModel;
 
         public void InitBloodCompartment(Model cm)
@@ -70,6 +76,14 @@ namespace NeonatalPhysiologyEngine
             currentModel = cm;
 
             currentModel.modelInterface.StatusMessage = $"Initialized blood compartment {name}.";
+
+            number_of_steps = (int)(currentModel.modelDefinition.modeling_interval / currentModel.modelDefinition.modeling_stepsize);
+
+            volumes = new double[30];
+
+            pressures = new double[30];
+
+            history_counter = 0;
         }
 
         public void UpdateCompartment()
@@ -79,6 +93,15 @@ namespace NeonatalPhysiologyEngine
                 EnergyBalance();
                 pres_current = CalculatePressure();
             }
+
+            if (history_counter > 28)
+            {
+                history_counter = 0;
+            }
+            volumes[history_counter] = Math.Round(vol_current, 2);
+            pressures[history_counter] = Math.Round(pres_current, 2);
+            history_counter++;
+
         }
 
         public void BloodIn(double dvol, BloodCompartment compFrom)
@@ -215,7 +238,7 @@ namespace NeonatalPhysiologyEngine
 
             if (vol_current <= el_min_volume)
             {
-               return el_baseline + el_contraction + el_k1 * Math.Pow((vol_current - el_min_volume), 3);
+                return el_baseline + el_contraction + el_k1 * Math.Pow((vol_current - el_min_volume), 3);
             }
 
             return el_baseline + el_contraction;
