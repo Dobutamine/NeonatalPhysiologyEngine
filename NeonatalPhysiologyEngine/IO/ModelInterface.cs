@@ -376,6 +376,12 @@ namespace NeonatalPhysiologyEngine.IO
                 {
                     double[] newValue_gc = { Math.Round(gc.vol_current, 2), Math.Round(gc.to2, 2), Math.Round(gc.pco2, 2) };
                     _data.Add(gc.name, newValue_gc);
+
+                    if (gc.name == "ALL" || gc.name == "ALR" || gc.name == "NCA")
+                    {
+                        _data.Add(gc.name + "_p", gc.pressures);
+                        _data.Add(gc.name + "_v", gc.volumes);
+                    }
                 }
 
                 foreach (BloodConnector bcc in currentModel.modelDefinition.blood_connectors)
