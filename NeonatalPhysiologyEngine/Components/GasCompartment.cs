@@ -37,7 +37,6 @@ namespace NeonatalPhysiologyEngine
         public double pother { get; set; }
         public double ph2o { get; set; }
         public double patm { get; set; }
-
         public double ctotal { get; set; }
         public double co2 { get; set; }
         public double cn2 { get; set; }
@@ -45,13 +44,9 @@ namespace NeonatalPhysiologyEngine
         public double cother { get; set; }
         public double ch2o { get; set; }
         public double to2 { get; set; }
-
         public double temp { get; set; }
         double gas_constant = 62.36367;
-
         Model currentModel;
-
-
         public void InitGasCompartment(Model cm)
         {
             pres_current = 0;
@@ -119,7 +114,8 @@ namespace NeonatalPhysiologyEngine
                 pn2 = fn2 * (pres_current - (pres_current * fh2o));
                 pother = fother * (pres_current - (pres_current * fh2o));
 
-            } else
+            }
+            else
             {
                 CalculateComposition();
             }
@@ -151,7 +147,7 @@ namespace NeonatalPhysiologyEngine
 
             if (vol_current <= el_min_volume)
             {
-                return el_baseline  + el_k1 * Math.Pow((vol_current - el_min_volume), 3);
+                return el_baseline + el_k1 * Math.Pow((vol_current - el_min_volume), 3);
             }
 
             return el_baseline;

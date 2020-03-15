@@ -81,14 +81,16 @@ namespace NeonatalPhysiologyEngine
                         comp2.BloodIn(current_flow * currentModel.modelDefinition.modeling_stepsize, comp1);
                         // store the flow
                         real_flow = current_flow;
-                    } else
+                    }
+                    else
                     {
                         // if no backflow is set then set the flow to zero
                         if (no_backflow == 1)
                         {
                             current_flow = 0;
                             real_flow = 0;
-                        } else
+                        }
+                        else
                         {
                             // calculate the flow
                             current_flow = (comp2.pres_current - comp1.pres_current) / res_current;
@@ -109,7 +111,8 @@ namespace NeonatalPhysiologyEngine
             if (comp1.pres_current > comp2.pres_current)
             {
                 return res_forward_baseline;
-            } else
+            }
+            else
             {
                 return res_backward_baseline;
             }

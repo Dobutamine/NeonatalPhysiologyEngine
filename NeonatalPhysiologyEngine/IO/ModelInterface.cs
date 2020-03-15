@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -11,7 +12,6 @@ namespace NeonatalPhysiologyEngine.IO
 {
     public class ModelInterface : INotifyPropertyChanged
     {
-
         public event PropertyChangedEventHandler PropertyChanged;
         void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -49,6 +49,13 @@ namespace NeonatalPhysiologyEngine.IO
 
         Model currentModel;
 
+        public Task<string> GetModelStatusMessageAsync()
+        {
+            return Task.Run(() =>
+            {
+                return JsonConvert.SerializeObject(currentModel.modelInterface.StatusMessage);
+            });
+        }
         public ModelInterface(Model cm)
         {
             currentModel = cm;
@@ -58,18 +65,201 @@ namespace NeonatalPhysiologyEngine.IO
         {
             return Task.Run(() =>
             {
-                BloodCompartment bc = currentModel.FindModelComponent<BloodCompartment>(comp_name);
-                return JsonConvert.SerializeObject(bc);
+                foreach (BloodCompartment bc in currentModel.modelDefinition.blood_compartments)
+                {
+                    if (bc.name == comp_name)
+                    {
+                        return JsonConvert.SerializeObject(bc);
+                    }
+                }
+
+                foreach (GasCompartment gc in currentModel.modelDefinition.gas_compartments)
+                {
+                    if (gc.name == comp_name)
+                    {
+                        return JsonConvert.SerializeObject(gc);
+                    }
+                }
+
+                foreach (Container cont in currentModel.modelDefinition.containers)
+                {
+                    if (cont.name == comp_name)
+                    {
+                        return JsonConvert.SerializeObject(cont);
+                    }
+                }
+
+                return "";
+
+
             });
         }
 
-        public Task<string> GetModelStatusMessageAsync()
+        public Task<string> GetConnectorDataAsync(string con_name)
         {
             return Task.Run(() =>
             {
-                return JsonConvert.SerializeObject(currentModel.modelInterface.StatusMessage);
+
+                foreach (BloodConnector bc in currentModel.modelDefinition.blood_connectors)
+                {
+                    if (bc.name == con_name)
+                    {
+                        return JsonConvert.SerializeObject(bc);
+
+                    }
+                }
+
+                foreach (GasConnector gc in currentModel.modelDefinition.gas_connectors)
+                {
+                    if (gc.name == con_name)
+                    {
+                        return JsonConvert.SerializeObject(gc);
+
+                    }
+                }
+
+                foreach (Valve valve in currentModel.modelDefinition.valves)
+                {
+                    if (valve.name == con_name)
+                    {
+                        return JsonConvert.SerializeObject(valve);
+
+                    }
+                }
+
+                foreach (Shunt shunt in currentModel.modelDefinition.shunts)
+                {
+                    if (shunt.name == con_name)
+                    {
+                        return JsonConvert.SerializeObject(shunt);
+
+                    }
+                }
+
+                return "";
+
+
             });
         }
+
+        public void SetCompartmentProperties(string comp_props)
+        {
+            var new_props = JsonConvert.DeserializeObject<CompProps>(comp_props);
+
+            foreach (BloodCompartment bc in currentModel.modelDefinition.blood_compartments)
+            {
+                if (bc.name == new_props.name)
+                {
+                    bc.vol_unstressed_baseline = new_props.u_vol_base;
+                    bc.is_enabled = new_props.is_enabled;
+                    bc.vol_current_baseline = new_props.vol_base;
+                    bc.el_baseline = new_props.el_base;
+                    bc.el_contraction_baseline = new_props.el_cont;
+                    bc.el_min_volume = new_props.el_min;
+                    bc.el_max_volume = new_props.el_max;
+                    bc.el_k1 = new_props.el_k1;
+                    bc.el_k2 = new_props.el_k2;
+                    bc.fvatp = new_props.fvatp;
+                }
+            }
+
+            foreach (GasCompartment bc in currentModel.modelDefinition.gas_compartments)
+            {
+                if (bc.name == new_props.name)
+                {
+                    bc.vol_unstressed_baseline = new_props.u_vol_base;
+                    bc.is_enabled = new_props.is_enabled;
+                    bc.vol_current_baseline = new_props.vol_base;
+                    bc.el_baseline = new_props.el_base;
+                    bc.el_contraction_baseline = new_props.el_cont;
+                    bc.el_min_volume = new_props.el_min;
+                    bc.el_max_volume = new_props.el_max;
+                    bc.el_k1 = new_props.el_k1;
+                    bc.el_k2 = new_props.el_k2;
+                }
+            }
+
+            foreach (Container bc in currentModel.modelDefinition.containers)
+            {
+                if (bc.name == new_props.name)
+                {
+                    bc.vol_unstressed_baseline = new_props.u_vol_base;
+                    bc.is_enabled = new_props.is_enabled;
+                    bc.vol_current_baseline = new_props.vol_base;
+                    bc.el_baseline = new_props.el_base;
+                    bc.el_min_volume = new_props.el_min;
+                    bc.el_max_volume = new_props.el_max;
+                    bc.el_k1 = new_props.el_k1;
+                    bc.el_k2 = new_props.el_k2;
+                }
+            }
+
+
+
+        }
+
+        public void SetConnectorProperties(string con_props)
+        {
+            var new_props = JsonConvert.DeserializeObject<ConProps>(con_props);
+
+
+            foreach (BloodConnector bc in currentModel.modelDefinition.blood_connectors)
+            {
+                if (bc.name == new_props.name)
+                {
+                    bc.is_enabled = new_props.is_enabled;
+                    bc.no_backflow = new_props.no_backflow;
+                    bc.res_forward_baseline = new_props.res_forward_baseline;
+                    bc.res_backward_baseline = new_props.res_backward_baseline;
+                    bc.in_baseline = new_props.in_baseline;
+                    bc.in_k1 = new_props.in_k1;
+                    bc.in_k2 = new_props.in_k2;
+                }
+            }
+
+            foreach (GasConnector gc in currentModel.modelDefinition.gas_connectors)
+            {
+                if (gc.name == new_props.name)
+                {
+                    gc.is_enabled = new_props.is_enabled;
+                    gc.no_backflow = new_props.no_backflow;
+                    gc.res_forward_baseline = new_props.res_forward_baseline;
+                    gc.res_backward_baseline = new_props.res_backward_baseline;
+                    gc.in_baseline = new_props.in_baseline;
+                    gc.in_k1 = new_props.in_k1;
+                    gc.in_k2 = new_props.in_k2;
+                }
+            }
+
+            foreach (Valve gc in currentModel.modelDefinition.valves)
+            {
+                if (gc.name == new_props.name)
+                {
+                    gc.is_enabled = new_props.is_enabled;
+                    gc.no_backflow = new_props.no_backflow;
+                    gc.res_forward_baseline = new_props.res_forward_baseline;
+                    gc.res_backward_baseline = new_props.res_backward_baseline;
+                    gc.in_baseline = new_props.in_baseline;
+                    gc.in_k1 = new_props.in_k1;
+                    gc.in_k2 = new_props.in_k2;
+                }
+            }
+
+            foreach (Shunt gc in currentModel.modelDefinition.shunts)
+            {
+                if (gc.name == new_props.name)
+                {
+                    gc.is_enabled = new_props.is_enabled;
+                    gc.no_backflow = new_props.no_backflow;
+                    gc.res_forward_baseline = new_props.res_forward_baseline;
+                    gc.res_backward_baseline = new_props.res_backward_baseline;
+                    gc.in_baseline = new_props.in_baseline;
+                    gc.in_k1 = new_props.in_k1;
+                    gc.in_k2 = new_props.in_k2;
+                }
+            }
+        }
+
 
         public Task<string> GetCompartmentNameListAsync(int comp_type)
         {
@@ -77,35 +267,56 @@ namespace NeonatalPhysiologyEngine.IO
             {
                 List<string> comp_list = new List<string>();
 
-                switch (comp_type)
+                foreach (BloodCompartment bc in currentModel.modelDefinition.blood_compartments)
                 {
-                    case 0: // blood
-                        foreach (BloodCompartment bc in currentModel.modelDefinition.blood_compartments)
-                        {
-                            comp_list.Add(bc.name);
-                        }
-                        break;
-                    case 1: // gas
-                        foreach (GasCompartment gc in currentModel.modelDefinition.gas_compartments)
-                        {
-                            comp_list.Add(gc.name);
-                        }
-                        break;
-                    case 2: // container
-                        foreach (Container cont in currentModel.modelDefinition.containers)
-                        {
-                            comp_list.Add(cont.name);
-                        }
-                        break;
-                    default:
-                        break;
+                    comp_list.Add(bc.name);
+                }
+
+                foreach (GasCompartment gc in currentModel.modelDefinition.gas_compartments)
+                {
+                    comp_list.Add(gc.name);
+                }
+
+                foreach (Container cont in currentModel.modelDefinition.containers)
+                {
+                    comp_list.Add(cont.name);
                 }
 
                 return JsonConvert.SerializeObject(comp_list);
             });
         }
 
+        public Task<string> GetConnectorNameListAsync(int con_type)
+        {
+            return Task.Run(() =>
+            {
+                List<string> con_list = new List<string>();
 
+
+                foreach (BloodConnector bc in currentModel.modelDefinition.blood_connectors)
+                {
+                    con_list.Add(bc.name);
+                }
+
+                foreach (GasConnector gc in currentModel.modelDefinition.gas_connectors)
+                {
+                    con_list.Add(gc.name);
+                }
+
+                foreach (Valve gc in currentModel.modelDefinition.valves)
+                {
+                    con_list.Add(gc.name);
+                }
+
+                foreach (Shunt gc in currentModel.modelDefinition.shunts)
+                {
+                    con_list.Add(gc.name);
+                }
+
+
+                return JsonConvert.SerializeObject(con_list);
+            });
+        }
 
         public Task<string> GetModelStateAsync()
         {
@@ -191,6 +402,40 @@ namespace NeonatalPhysiologyEngine.IO
                 return JsonConvert.SerializeObject(_data);
             });
         }
+
+    }
+
+    class ConProps
+    {
+        public string name = "";
+        public int is_enabled = 1;
+        public string comp1 = "";
+        public string comp2 = "";
+        public int no_backflow = 0;
+        public double res_forward_baseline = 0.1;
+        public double res_backward_baseline = 0.1;
+        public double in_baseline = 0;
+        public double in_k1 = 0;
+        public double in_k2 = 0;
+
+
+
+    }
+    class CompProps
+    {
+        public string name = "";
+        public int is_enabled = 1;
+        public int comp_type = 0;
+        public double u_vol_base = 47;
+        public double vol_base = 140;
+        public double el_base = 1;
+        public double el_cont = 1;
+        public double el_min = -1000;
+        public double el_max = 1000;
+        public double el_k1 = 1;
+        public double el_k2 = 1;
+        public double fvatp = 0;
+
 
     }
 

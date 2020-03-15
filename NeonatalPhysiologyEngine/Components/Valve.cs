@@ -4,7 +4,7 @@ using System.Text;
 
 namespace NeonatalPhysiologyEngine
 {
-    public class Valve
+    public class Valve : IConnector
     {
         public string name { get; set; } = "";
         public string compartments { get; set; } = "";

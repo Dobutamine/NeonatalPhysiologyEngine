@@ -132,7 +132,7 @@ namespace NeonatalPhysiologyEngine
                 }
             }
 
-            foreach (Valve valve in modelDefinition.valves)
+            foreach (IConnector valve in modelDefinition.valves)
             {
                 if (comp_name == valve.name)
                 {
@@ -140,7 +140,7 @@ namespace NeonatalPhysiologyEngine
                 }
             }
 
-            foreach (Shunt shunt in modelDefinition.shunts)
+            foreach (IConnector shunt in modelDefinition.shunts)
             {
                 if (comp_name == shunt.name)
                 {
@@ -157,7 +157,7 @@ namespace NeonatalPhysiologyEngine
                 }
             }
 
-            foreach (GasConnector gasCon in modelDefinition.gas_connectors)
+            foreach (IConnector gasCon in modelDefinition.gas_connectors)
             {
                 if (comp_name == gasCon.name)
                 {
@@ -191,6 +191,8 @@ namespace NeonatalPhysiologyEngine
 
 
             return (T)Convert.ChangeType(null, typeof(T));
+
+
 
         }
         public void InitModel()
@@ -519,6 +521,13 @@ namespace NeonatalPhysiologyEngine
             modelInterface.ModelUpdated = true;
 
         }
+
+    }
+
+    public interface IConnector
+    {
+        string name { get; set; }
+        int is_enabled { get; set; }
 
     }
 

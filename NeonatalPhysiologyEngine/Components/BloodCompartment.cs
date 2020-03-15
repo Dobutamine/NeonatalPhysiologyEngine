@@ -4,7 +4,7 @@ using System.Text;
 
 namespace NeonatalPhysiologyEngine
 {
-    public class BloodCompartment
+    public class BloodCompartment : IConnector
     {
         public string name { get; set; }
         public int is_enabled { get; set; }
@@ -224,6 +224,8 @@ namespace NeonatalPhysiologyEngine
 
         double CalculatePressure()
         {
+            vol_unstressed = vol_unstressed_baseline;
+
             return (vol_current - vol_unstressed) * CalculateElastance() + container_pressure + external_pressure;
         }
 
