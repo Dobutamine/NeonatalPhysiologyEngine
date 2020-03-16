@@ -61,6 +61,77 @@ namespace NeonatalPhysiologyEngine.IO
             currentModel = cm;
         }
 
+        // ECG
+        public Task<string> GetECGPropertiesAsync(string data)
+        {
+            return Task.Run(() =>
+            {
+                // return JsonConvert.SerializeObject(bc);
+                return "";
+            });
+        }
+        public void SetECGProperties(string props)
+        {
+            var new_props = JsonConvert.DeserializeObject<CompProps>(props);
+        }
+
+        // BREATHING
+        public Task<string> GetBreathingPropertiesAsync(string data)
+        {
+            return Task.Run(() =>
+            {
+                // return JsonConvert.SerializeObject(bc);
+                return "";
+            });
+        }
+        public void SetBreathingProperties(string props)
+        {
+            var new_props = JsonConvert.DeserializeObject<CompProps>(props);
+        }
+
+        // VENTILATOR
+        public Task<string> GetVentilatorPropertiesAsync(string data)
+        {
+            return Task.Run(() =>
+            {
+                // return JsonConvert.SerializeObject(bc);
+                return "";
+            });
+        }
+        public void SetVentilatorProperties(string props)
+        {
+            var new_props = JsonConvert.DeserializeObject<CompProps>(props);
+        }
+
+        // METABOLISM
+        public Task<string> GetMetabolismPropertiesAsync(string data)
+        {
+            return Task.Run(() =>
+            {
+                // return JsonConvert.SerializeObject(bc);
+                return "";
+            });
+        }
+        public void SetMetabolismProperties(string props)
+        {
+            var new_props = JsonConvert.DeserializeObject<CompProps>(props);
+        }
+
+        // ANS
+        public Task<string> GetANSPropertiesAsync(string data)
+        {
+            return Task.Run(() =>
+            {
+                // return JsonConvert.SerializeObject(bc);
+                return "";
+            });
+        }
+        public void SetANSProperties(string props)
+        {
+            var new_props = JsonConvert.DeserializeObject<CompProps>(props);
+        }
+
+        // COMPARTMENTS
         public Task<string> GetCompartmentDataAsync(string comp_name)
         {
             return Task.Run(() =>
@@ -94,54 +165,6 @@ namespace NeonatalPhysiologyEngine.IO
 
             });
         }
-
-        public Task<string> GetConnectorDataAsync(string con_name)
-        {
-            return Task.Run(() =>
-            {
-
-                foreach (BloodConnector bc in currentModel.modelDefinition.blood_connectors)
-                {
-                    if (bc.name == con_name)
-                    {
-                        return JsonConvert.SerializeObject(bc);
-
-                    }
-                }
-
-                foreach (GasConnector gc in currentModel.modelDefinition.gas_connectors)
-                {
-                    if (gc.name == con_name)
-                    {
-                        return JsonConvert.SerializeObject(gc);
-
-                    }
-                }
-
-                foreach (Valve valve in currentModel.modelDefinition.valves)
-                {
-                    if (valve.name == con_name)
-                    {
-                        return JsonConvert.SerializeObject(valve);
-
-                    }
-                }
-
-                foreach (Shunt shunt in currentModel.modelDefinition.shunts)
-                {
-                    if (shunt.name == con_name)
-                    {
-                        return JsonConvert.SerializeObject(shunt);
-
-                    }
-                }
-
-                return "";
-
-
-            });
-        }
-
         public void SetCompartmentProperties(string comp_props)
         {
             var new_props = JsonConvert.DeserializeObject<CompProps>(comp_props);
@@ -197,7 +220,32 @@ namespace NeonatalPhysiologyEngine.IO
 
 
         }
+        public Task<string> GetCompartmentNameListAsync(int comp_type)
+        {
+            return Task.Run(() =>
+            {
+                List<string> comp_list = new List<string>();
 
+                foreach (BloodCompartment bc in currentModel.modelDefinition.blood_compartments)
+                {
+                    comp_list.Add(bc.name);
+                }
+
+                foreach (GasCompartment gc in currentModel.modelDefinition.gas_compartments)
+                {
+                    comp_list.Add(gc.name);
+                }
+
+                foreach (Container cont in currentModel.modelDefinition.containers)
+                {
+                    comp_list.Add(cont.name);
+                }
+
+                return JsonConvert.SerializeObject(comp_list);
+            });
+        }
+        
+        // CONNECTORS
         public void SetConnectorProperties(string con_props)
         {
             var new_props = JsonConvert.DeserializeObject<ConProps>(con_props);
@@ -259,33 +307,52 @@ namespace NeonatalPhysiologyEngine.IO
                 }
             }
         }
-
-
-        public Task<string> GetCompartmentNameListAsync(int comp_type)
+        public Task<string> GetConnectorDataAsync(string con_name)
         {
             return Task.Run(() =>
             {
-                List<string> comp_list = new List<string>();
 
-                foreach (BloodCompartment bc in currentModel.modelDefinition.blood_compartments)
+                foreach (BloodConnector bc in currentModel.modelDefinition.blood_connectors)
                 {
-                    comp_list.Add(bc.name);
+                    if (bc.name == con_name)
+                    {
+                        return JsonConvert.SerializeObject(bc);
+
+                    }
                 }
 
-                foreach (GasCompartment gc in currentModel.modelDefinition.gas_compartments)
+                foreach (GasConnector gc in currentModel.modelDefinition.gas_connectors)
                 {
-                    comp_list.Add(gc.name);
+                    if (gc.name == con_name)
+                    {
+                        return JsonConvert.SerializeObject(gc);
+
+                    }
                 }
 
-                foreach (Container cont in currentModel.modelDefinition.containers)
+                foreach (Valve valve in currentModel.modelDefinition.valves)
                 {
-                    comp_list.Add(cont.name);
+                    if (valve.name == con_name)
+                    {
+                        return JsonConvert.SerializeObject(valve);
+
+                    }
                 }
 
-                return JsonConvert.SerializeObject(comp_list);
+                foreach (Shunt shunt in currentModel.modelDefinition.shunts)
+                {
+                    if (shunt.name == con_name)
+                    {
+                        return JsonConvert.SerializeObject(shunt);
+
+                    }
+                }
+
+                return "";
+
+
             });
         }
-
         public Task<string> GetConnectorNameListAsync(int con_type)
         {
             return Task.Run(() =>
@@ -318,6 +385,7 @@ namespace NeonatalPhysiologyEngine.IO
             });
         }
 
+        // MODEL STATE
         public Task<string> GetModelStateAsync()
         {
             return Task.Run(() =>
