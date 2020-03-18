@@ -66,13 +66,49 @@ namespace NeonatalPhysiologyEngine.IO
         {
             return Task.Run(() =>
             {
-                // return JsonConvert.SerializeObject(bc);
-                return "";
+                Dictionary<string,double> _data = new Dictionary<string, double>();
+
+                _data.Add("heart_rate", currentModel.modelDefinition.ecg["heart_rate"]);
+                _data.Add("heart_rate_ref", currentModel.modelDefinition.ecg["heart_rate_ref"]);
+                _data.Add("rhythm_type", currentModel.modelDefinition.ecg["rhythm_type"]);
+
+                _data.Add("pq_time", currentModel.modelDefinition.ecg["pq_time"]);
+                _data.Add("qrs_time", currentModel.modelDefinition.ecg["qrs_time"]);
+                _data.Add("qt_time", currentModel.modelDefinition.ecg["qt_time"]);
+                _data.Add("cqt_time", currentModel.modelDefinition.ecg["cqt_time"]);
+
+                _data.Add("amp_p", currentModel.modelDefinition.ecg["amp_p"]);
+                _data.Add("skew_p", currentModel.modelDefinition.ecg["skew_p"]);
+                _data.Add("width_p", currentModel.modelDefinition.ecg["width_p"]);
+
+                _data.Add("amp_t", currentModel.modelDefinition.ecg["amp_t"]);
+                _data.Add("skew_t", currentModel.modelDefinition.ecg["skew_t"]);
+                _data.Add("width_t", currentModel.modelDefinition.ecg["width_t"]);
+
+                return JsonConvert.SerializeObject(_data);
             });
         }
         public void SetECGProperties(string props)
         {
-            var new_props = JsonConvert.DeserializeObject<CompProps>(props);
+            var new_props = JsonConvert.DeserializeObject<ECGProps>(props);
+
+            currentModel.modelDefinition.ecg["heart_rate"] = new_props.heart_rate;
+            currentModel.modelDefinition.ecg["heart_rate_ref"] = new_props.heart_rate_ref;
+            currentModel.modelDefinition.ecg["rhythm_type"] = new_props.rhythm_type;
+
+            currentModel.modelDefinition.ecg["pq_time"] = new_props.pq_time;
+            currentModel.modelDefinition.ecg["qrs_time"] = new_props.qrs_time;
+            currentModel.modelDefinition.ecg["qt_time"] = new_props.qt_time;
+            currentModel.modelDefinition.ecg["cqt_time"] = new_props.cqt_time;
+
+            currentModel.modelDefinition.ecg["amp_p"] = new_props.amp_p;
+            currentModel.modelDefinition.ecg["skew_p"] = new_props.skew_p;
+            currentModel.modelDefinition.ecg["width_p"] = new_props.width_p;
+
+            currentModel.modelDefinition.ecg["amp_t"] = new_props.amp_t;
+            currentModel.modelDefinition.ecg["skew_t"] = new_props.skew_t;
+            currentModel.modelDefinition.ecg["width_t"] = new_props.width_t;
+
         }
 
         // BREATHING
@@ -80,8 +116,20 @@ namespace NeonatalPhysiologyEngine.IO
         {
             return Task.Run(() =>
             {
-                // return JsonConvert.SerializeObject(bc);
-                return "";
+                 Dictionary<string,double> _data = new Dictionary<string, double>();
+
+                _data.Add("spont_breathing_enabled", currentModel.modelDefinition.breathing["spont_breathing_enabled"]);
+                _data.Add("spont_resp_rate", currentModel.modelDefinition.breathing["spont_resp_rate"]);
+
+                _data.Add("ref_minute_volume", currentModel.modelDefinition.breathing["ref_minute_volume"]);
+                _data.Add("ref_tidal_volume", currentModel.modelDefinition.breathing["ref_tidal_volume"]);
+                _data.Add("target_minute_volume", currentModel.modelDefinition.breathing["target_minute_volume"]);
+
+                _data.Add("target_tidal_volume", currentModel.modelDefinition.breathing["target_tidal_volume"]);
+                _data.Add("vtrr_ratio", currentModel.modelDefinition.breathing["vtrr_ratio"]);
+                _data.Add("resp_muscle_pressure", currentModel.modelDefinition.breathing["resp_muscle_pressure"]);
+
+                return JsonConvert.SerializeObject(_data);
             });
         }
         public void SetBreathingProperties(string props)
@@ -94,8 +142,21 @@ namespace NeonatalPhysiologyEngine.IO
         {
             return Task.Run(() =>
             {
-                // return JsonConvert.SerializeObject(bc);
-                return "";
+                Dictionary<string,double> _data = new Dictionary<string, double>();
+
+                _data.Add("ventilator_enabled", currentModel.modelDefinition.ventilator["ventilator_enabled"]);
+                _data.Add("volume_controlled", currentModel.modelDefinition.ventilator["volume_controlled"]);
+
+                _data.Add("target_tidal_volume", currentModel.modelDefinition.ventilator["target_tidal_volume"]);
+                _data.Add("max_pip", currentModel.modelDefinition.ventilator["max_pip"]);
+                _data.Add("peep", currentModel.modelDefinition.ventilator["peep"]);
+
+                _data.Add("insp_flow", currentModel.modelDefinition.ventilator["insp_flow"]);
+                _data.Add("exp_flow", currentModel.modelDefinition.ventilator["exp_flow"]);
+                _data.Add("t_in", currentModel.modelDefinition.ventilator["t_in"]);
+                _data.Add("t_ex", currentModel.modelDefinition.ventilator["t_ex"]);
+
+                return JsonConvert.SerializeObject(_data);
             });
         }
         public void SetVentilatorProperties(string props)
@@ -216,9 +277,6 @@ namespace NeonatalPhysiologyEngine.IO
                     bc.el_k2 = new_props.el_k2;
                 }
             }
-
-
-
         }
         public Task<string> GetCompartmentNameListAsync(int comp_type)
         {
@@ -244,7 +302,6 @@ namespace NeonatalPhysiologyEngine.IO
                 return JsonConvert.SerializeObject(comp_list);
             });
         }
-        
         // CONNECTORS
         public void SetConnectorProperties(string con_props)
         {
@@ -384,7 +441,6 @@ namespace NeonatalPhysiologyEngine.IO
                 return JsonConvert.SerializeObject(con_list);
             });
         }
-
         // MODEL STATE
         public Task<string> GetModelStateAsync()
         {
@@ -479,6 +535,7 @@ namespace NeonatalPhysiologyEngine.IO
 
     }
 
+// property classes
     class ConProps
     {
         public string name = "";
@@ -512,5 +569,95 @@ namespace NeonatalPhysiologyEngine.IO
 
 
     }
+    class ECGProps
+    {
+        public double heart_rate = 0;
+        public double heart_rate_ref = 0;
+        public double rhythm_type = 0;
+        public double pq_time = 0;
+        public double qrs_time = 0;
+        public double qt_time = 0;
+        public double cqt_time = 0;
+        public double amp_p = 0;
+        public double skew_p = 0;
+        public double width_p = 0;
+        public double amp_t = 0;
+        public double skew_t = 0;
+        public double width_t = 0;
 
+    }
+    class GetMetabolismProps{
+        public double atp_need = 0;
+        public double resp_q = 0;
+        public double p_atm = 0;
+        public double outside_temp = 0;
+        public double body_temp = 0;
+        public double hemoglobin = 0;
+
+    }
+    class BreathingProps{
+        public double spont_breathing_enabled = 1;
+        public double spont_resp_rate = 1;
+        public double ref_minute_volume = 1;
+        public double ref_tidal_volume = 1;
+        public double target_minute_volume = 1;
+        public double target_tidal_volume = 1;
+        public double vtrr_ratio = 1;
+        public double resp_muscle_pressure = 1;
+
+    }
+    class VentilatorProps{
+        public double ventilator_enabled = 0;
+        public double volume_controlled = 0;
+        public double target_tidal_volume = 0;
+        public double max_pip = 0;
+        public double peep = 0;
+        public double insp_flow = 0;
+        public double exp_flow = 0;
+        public double t_in = 0;
+        public double t_ex = 0;
+    }
+    class ANSProps {
+        public double ans_enabled = 0;
+        public double th_lungvol = 0;
+        public double op_lungvol = 0;
+        public double sa_lungvol = 0;
+        public double th_map = 0;
+        public double op_map = 0;
+        public double sa_map = 0;
+        public double th_po2 = 0;
+        public double op_po2 = 0;
+        public double sa_po2 = 0;
+        public double th_pco2 = 0;
+        public double op_pco2 = 0;
+        public double sa_pco2 = 0;
+        public double th_ph = 0;
+        public double op_ph = 0;
+        public double sa_ph = 0;
+        public double tc_po2_hp = 0;
+        public double tc_map_hp = 0;
+        public double tc_map_cont = 0;
+        public double tc_map_venpool = 0;
+        public double tc_map_res = 0;
+        public double tc_po2_ve = 0;
+        public double tc_pco2_hp = 0;
+        public double tc_pco2_ve = 0;
+        public double tc_ph_hp = 0;
+        public double tc_ph_ve = 0;
+        public double tc_lungvol_hp = 0;
+        public double g_po2_ve = 0;
+        public double g_ph_ve = 0;
+        public double g_ph_hp = 0;
+        public double g_pco2_ve = 0;
+        public double g_pco2_hp = 0;
+        public double g_po2_hp = 0;
+        public double g_map_cont = 0;
+        public double g_map_res = 0;
+        public double g_map_venpool = 0;
+        public double g_map_hp = 0;
+        public double g_lungvol_hp = 0;
+        public double lung_vol_hp_threshold = 0;
+
+
+    }
 }
