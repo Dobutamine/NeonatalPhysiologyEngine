@@ -8,89 +8,75 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace NeonatalPhysiologyEngine.IO
-{
-    public class ModelInterface : INotifyPropertyChanged
-    {
+namespace NeonatalPhysiologyEngine.IO {
+    public class ModelInterface : INotifyPropertyChanged {
         public event PropertyChangedEventHandler PropertyChanged;
-        void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        void OnPropertyChanged ([CallerMemberName] string propertyName = null) {
+            PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (propertyName));
         }
 
         bool _modelUpdated;
-        public bool ModelUpdated
-        {
-            get
-            {
+        public bool ModelUpdated {
+            get {
                 return _modelUpdated;
             }
-            set
-            {
+            set {
                 _modelUpdated = value;
-                OnPropertyChanged();
+                OnPropertyChanged ();
 
             }
         }
 
         FormattableString _statusMessage;
-        public FormattableString StatusMessage
-        {
+        public FormattableString StatusMessage {
             get { return _statusMessage; }
-            set
-            {
+            set {
                 if (_statusMessage == value)
                     return;
 
                 _statusMessage = value;
-                OnPropertyChanged();
+                OnPropertyChanged ();
             }
         }
 
         Model currentModel;
 
-        public Task<string> GetModelStatusMessageAsync()
-        {
-            return Task.Run(() =>
-            {
-                return JsonConvert.SerializeObject(currentModel.modelInterface.StatusMessage);
+        public Task<string> GetModelStatusMessageAsync () {
+            return Task.Run (() => {
+                return JsonConvert.SerializeObject (currentModel.modelInterface.StatusMessage);
             });
         }
-        public ModelInterface(Model cm)
-        {
+        public ModelInterface (Model cm) {
             currentModel = cm;
         }
 
         // ECG
-        public Task<string> GetECGPropertiesAsync(string data)
-        {
-            return Task.Run(() =>
-            {
-                Dictionary<string,double> _data = new Dictionary<string, double>();
+        public Task<string> GetECGPropertiesAsync (string data) {
+            return Task.Run (() => {
+                Dictionary<string, double> _data = new Dictionary<string, double> ();
 
-                _data.Add("heart_rate", currentModel.modelDefinition.ecg["heart_rate"]);
-                _data.Add("heart_rate_ref", currentModel.modelDefinition.ecg["heart_rate_ref"]);
-                _data.Add("rhythm_type", currentModel.modelDefinition.ecg["rhythm_type"]);
+                _data.Add ("heart_rate", currentModel.modelDefinition.ecg["heart_rate"]);
+                _data.Add ("heart_rate_ref", currentModel.modelDefinition.ecg["heart_rate_ref"]);
+                _data.Add ("rhythm_type", currentModel.modelDefinition.ecg["rhythm_type"]);
 
-                _data.Add("pq_time", currentModel.modelDefinition.ecg["pq_time"]);
-                _data.Add("qrs_time", currentModel.modelDefinition.ecg["qrs_time"]);
-                _data.Add("qt_time", currentModel.modelDefinition.ecg["qt_time"]);
-                _data.Add("cqt_time", currentModel.modelDefinition.ecg["cqt_time"]);
+                _data.Add ("pq_time", currentModel.modelDefinition.ecg["pq_time"]);
+                _data.Add ("qrs_time", currentModel.modelDefinition.ecg["qrs_time"]);
+                _data.Add ("qt_time", currentModel.modelDefinition.ecg["qt_time"]);
+                _data.Add ("cqt_time", currentModel.modelDefinition.ecg["cqt_time"]);
 
-                _data.Add("amp_p", currentModel.modelDefinition.ecg["amp_p"]);
-                _data.Add("skew_p", currentModel.modelDefinition.ecg["skew_p"]);
-                _data.Add("width_p", currentModel.modelDefinition.ecg["width_p"]);
+                _data.Add ("amp_p", currentModel.modelDefinition.ecg["amp_p"]);
+                _data.Add ("skew_p", currentModel.modelDefinition.ecg["skew_p"]);
+                _data.Add ("width_p", currentModel.modelDefinition.ecg["width_p"]);
 
-                _data.Add("amp_t", currentModel.modelDefinition.ecg["amp_t"]);
-                _data.Add("skew_t", currentModel.modelDefinition.ecg["skew_t"]);
-                _data.Add("width_t", currentModel.modelDefinition.ecg["width_t"]);
+                _data.Add ("amp_t", currentModel.modelDefinition.ecg["amp_t"]);
+                _data.Add ("skew_t", currentModel.modelDefinition.ecg["skew_t"]);
+                _data.Add ("width_t", currentModel.modelDefinition.ecg["width_t"]);
 
-                return JsonConvert.SerializeObject(_data);
+                return JsonConvert.SerializeObject (_data);
             });
         }
-        public void SetECGProperties(string props)
-        {
-            var new_props = JsonConvert.DeserializeObject<ECGProps>(props);
+        public void SetECGProperties (string props) {
+            var new_props = JsonConvert.DeserializeObject<ECGProps> (props);
 
             currentModel.modelDefinition.ecg["heart_rate"] = new_props.heart_rate;
             currentModel.modelDefinition.ecg["heart_rate_ref"] = new_props.heart_rate_ref;
@@ -112,128 +98,111 @@ namespace NeonatalPhysiologyEngine.IO
         }
 
         // BREATHING
-        public Task<string> GetBreathingPropertiesAsync(string data)
-        {
-            return Task.Run(() =>
-            {
-                 Dictionary<string,double> _data = new Dictionary<string, double>();
+        public Task<string> GetBreathingPropertiesAsync (string data) {
+            return Task.Run (() => {
+                Dictionary<string, double> _data = new Dictionary<string, double> ();
 
-                _data.Add("spont_breathing_enabled", currentModel.modelDefinition.breathing["spont_breathing_enabled"]);
-                _data.Add("spont_resp_rate", currentModel.modelDefinition.breathing["spont_resp_rate"]);
+                _data.Add ("spont_breathing_enabled", currentModel.modelDefinition.breathing["spont_breathing_enabled"]);
+                _data.Add ("spont_resp_rate", currentModel.modelDefinition.breathing["spont_resp_rate"]);
 
-                _data.Add("ref_minute_volume", currentModel.modelDefinition.breathing["ref_minute_volume"]);
-                _data.Add("ref_tidal_volume", currentModel.modelDefinition.breathing["ref_tidal_volume"]);
-                _data.Add("target_minute_volume", currentModel.modelDefinition.breathing["target_minute_volume"]);
+                _data.Add ("ref_minute_volume", currentModel.modelDefinition.breathing["ref_minute_volume"]);
+                _data.Add ("ref_tidal_volume", currentModel.modelDefinition.breathing["ref_tidal_volume"]);
+                _data.Add ("target_minute_volume", currentModel.modelDefinition.breathing["target_minute_volume"]);
 
-                _data.Add("target_tidal_volume", currentModel.modelDefinition.breathing["target_tidal_volume"]);
-                _data.Add("vtrr_ratio", currentModel.modelDefinition.breathing["vtrr_ratio"]);
-                _data.Add("resp_muscle_pressure", currentModel.modelDefinition.breathing["resp_muscle_pressure"]);
+                _data.Add ("target_tidal_volume", currentModel.modelDefinition.breathing["target_tidal_volume"]);
+                _data.Add ("vtrr_ratio", currentModel.modelDefinition.breathing["vtrr_ratio"]);
+                _data.Add ("resp_muscle_pressure", currentModel.modelDefinition.breathing["resp_muscle_pressure"]);
 
-                return JsonConvert.SerializeObject(_data);
+                return JsonConvert.SerializeObject (_data);
             });
         }
-        public void SetBreathingProperties(string props)
-        {
-            var new_props = JsonConvert.DeserializeObject<CompProps>(props);
+        public void SetBreathingProperties (string props) {
+            var new_props = JsonConvert.DeserializeObject<CompProps> (props);
         }
 
         // VENTILATOR
-        public Task<string> GetVentilatorPropertiesAsync(string data)
-        {
-            return Task.Run(() =>
-            {
-                Dictionary<string,double> _data = new Dictionary<string, double>();
+        public Task<string> GetVentilatorPropertiesAsync (string data) {
+            return Task.Run (() => {
+                Dictionary<string, double> _data = new Dictionary<string, double> ();
 
-                _data.Add("ventilator_enabled", currentModel.modelDefinition.ventilator["ventilator_enabled"]);
-                _data.Add("volume_controlled", currentModel.modelDefinition.ventilator["volume_controlled"]);
+                _data.Add ("ventilator_enabled", currentModel.modelDefinition.ventilator["ventilator_enabled"]);
+                _data.Add ("volume_controlled", currentModel.modelDefinition.ventilator["volume_controlled"]);
 
-                _data.Add("target_tidal_volume", currentModel.modelDefinition.ventilator["target_tidal_volume"]);
-                _data.Add("max_pip", currentModel.modelDefinition.ventilator["max_pip"]);
-                _data.Add("peep", currentModel.modelDefinition.ventilator["peep"]);
+                _data.Add ("target_tidal_volume", currentModel.modelDefinition.ventilator["target_tidal_volume"]);
+                _data.Add ("max_pip", currentModel.modelDefinition.ventilator["max_pip"]);
+                _data.Add ("peep", currentModel.modelDefinition.ventilator["peep"]);
 
-                _data.Add("insp_flow", currentModel.modelDefinition.ventilator["insp_flow"]);
-                _data.Add("exp_flow", currentModel.modelDefinition.ventilator["exp_flow"]);
-                _data.Add("t_in", currentModel.modelDefinition.ventilator["t_in"]);
-                _data.Add("t_ex", currentModel.modelDefinition.ventilator["t_ex"]);
+                _data.Add ("insp_flow", currentModel.modelDefinition.ventilator["insp_flow"]);
+                _data.Add ("exp_flow", currentModel.modelDefinition.ventilator["exp_flow"]);
+                _data.Add ("t_in", currentModel.modelDefinition.ventilator["t_in"]);
+                _data.Add ("t_ex", currentModel.modelDefinition.ventilator["t_ex"]);
 
-                return JsonConvert.SerializeObject(_data);
+                return JsonConvert.SerializeObject (_data);
             });
         }
-        public void SetVentilatorProperties(string props)
-        {
-            var new_props = JsonConvert.DeserializeObject<CompProps>(props);
+        public void SetVentilatorProperties (string props) {
+            var new_props = JsonConvert.DeserializeObject<CompProps> (props);
         }
 
         // METABOLISM
-        public Task<string> GetMetabolismPropertiesAsync(string data)
-        {
-            return Task.Run(() =>
-            {
-                // return JsonConvert.SerializeObject(bc);
-                return "";
+        public Task<string> GetMetabolismPropertiesAsync (string data) {
+            return Task.Run (() => {
+                Dictionary<string, double> _data = new Dictionary<string, double> ();
+                _data.Add ("atp_need", currentModel.modelDefinition.metabolism["atp_need"]);
+                _data.Add ("resp_q", currentModel.modelDefinition.metabolism["resp_q"]);
+                _data.Add ("p_atm", currentModel.modelDefinition.metabolism["p_atm"]);
+                _data.Add ("outside_temp", currentModel.modelDefinition.metabolism["outside_temp"]);
+                _data.Add ("body_temp", currentModel.modelDefinition.metabolism["body_temp"]);
+                _data.Add ("hemoglobin", currentModel.modelDefinition.metabolism["hemoglobin"]);
+
+                return JsonConvert.SerializeObject (_data);
             });
         }
-        public void SetMetabolismProperties(string props)
-        {
-            var new_props = JsonConvert.DeserializeObject<CompProps>(props);
+        public void SetMetabolismProperties (string props) {
+            var new_props = JsonConvert.DeserializeObject<CompProps> (props);
         }
 
         // ANS
-        public Task<string> GetANSPropertiesAsync(string data)
-        {
-            return Task.Run(() =>
-            {
+        public Task<string> GetANSPropertiesAsync (string data) {
+            return Task.Run (() => {
                 // return JsonConvert.SerializeObject(bc);
                 return "";
             });
         }
-        public void SetANSProperties(string props)
-        {
-            var new_props = JsonConvert.DeserializeObject<CompProps>(props);
+        public void SetANSProperties (string props) {
+            var new_props = JsonConvert.DeserializeObject<CompProps> (props);
         }
 
         // COMPARTMENTS
-        public Task<string> GetCompartmentDataAsync(string comp_name)
-        {
-            return Task.Run(() =>
-            {
-                foreach (BloodCompartment bc in currentModel.modelDefinition.blood_compartments)
-                {
-                    if (bc.name == comp_name)
-                    {
-                        return JsonConvert.SerializeObject(bc);
+        public Task<string> GetCompartmentDataAsync (string comp_name) {
+            return Task.Run (() => {
+                foreach (BloodCompartment bc in currentModel.modelDefinition.blood_compartments) {
+                    if (bc.name == comp_name) {
+                        return JsonConvert.SerializeObject (bc);
                     }
                 }
 
-                foreach (GasCompartment gc in currentModel.modelDefinition.gas_compartments)
-                {
-                    if (gc.name == comp_name)
-                    {
-                        return JsonConvert.SerializeObject(gc);
+                foreach (GasCompartment gc in currentModel.modelDefinition.gas_compartments) {
+                    if (gc.name == comp_name) {
+                        return JsonConvert.SerializeObject (gc);
                     }
                 }
 
-                foreach (Container cont in currentModel.modelDefinition.containers)
-                {
-                    if (cont.name == comp_name)
-                    {
-                        return JsonConvert.SerializeObject(cont);
+                foreach (Container cont in currentModel.modelDefinition.containers) {
+                    if (cont.name == comp_name) {
+                        return JsonConvert.SerializeObject (cont);
                     }
                 }
 
                 return "";
 
-
             });
         }
-        public void SetCompartmentProperties(string comp_props)
-        {
-            var new_props = JsonConvert.DeserializeObject<CompProps>(comp_props);
+        public void SetCompartmentProperties (string comp_props) {
+            var new_props = JsonConvert.DeserializeObject<CompProps> (comp_props);
 
-            foreach (BloodCompartment bc in currentModel.modelDefinition.blood_compartments)
-            {
-                if (bc.name == new_props.name)
-                {
+            foreach (BloodCompartment bc in currentModel.modelDefinition.blood_compartments) {
+                if (bc.name == new_props.name) {
                     bc.vol_unstressed_baseline = new_props.u_vol_base;
                     bc.is_enabled = new_props.is_enabled;
                     bc.vol_current_baseline = new_props.vol_base;
@@ -247,10 +216,8 @@ namespace NeonatalPhysiologyEngine.IO
                 }
             }
 
-            foreach (GasCompartment bc in currentModel.modelDefinition.gas_compartments)
-            {
-                if (bc.name == new_props.name)
-                {
+            foreach (GasCompartment bc in currentModel.modelDefinition.gas_compartments) {
+                if (bc.name == new_props.name) {
                     bc.vol_unstressed_baseline = new_props.u_vol_base;
                     bc.is_enabled = new_props.is_enabled;
                     bc.vol_current_baseline = new_props.vol_base;
@@ -263,10 +230,8 @@ namespace NeonatalPhysiologyEngine.IO
                 }
             }
 
-            foreach (Container bc in currentModel.modelDefinition.containers)
-            {
-                if (bc.name == new_props.name)
-                {
+            foreach (Container bc in currentModel.modelDefinition.containers) {
+                if (bc.name == new_props.name) {
                     bc.vol_unstressed_baseline = new_props.u_vol_base;
                     bc.is_enabled = new_props.is_enabled;
                     bc.vol_current_baseline = new_props.vol_base;
@@ -278,40 +243,31 @@ namespace NeonatalPhysiologyEngine.IO
                 }
             }
         }
-        public Task<string> GetCompartmentNameListAsync(int comp_type)
-        {
-            return Task.Run(() =>
-            {
-                List<string> comp_list = new List<string>();
+        public Task<string> GetCompartmentNameListAsync (int comp_type) {
+            return Task.Run (() => {
+                List<string> comp_list = new List<string> ();
 
-                foreach (BloodCompartment bc in currentModel.modelDefinition.blood_compartments)
-                {
-                    comp_list.Add(bc.name);
+                foreach (BloodCompartment bc in currentModel.modelDefinition.blood_compartments) {
+                    comp_list.Add (bc.name);
                 }
 
-                foreach (GasCompartment gc in currentModel.modelDefinition.gas_compartments)
-                {
-                    comp_list.Add(gc.name);
+                foreach (GasCompartment gc in currentModel.modelDefinition.gas_compartments) {
+                    comp_list.Add (gc.name);
                 }
 
-                foreach (Container cont in currentModel.modelDefinition.containers)
-                {
-                    comp_list.Add(cont.name);
+                foreach (Container cont in currentModel.modelDefinition.containers) {
+                    comp_list.Add (cont.name);
                 }
 
-                return JsonConvert.SerializeObject(comp_list);
+                return JsonConvert.SerializeObject (comp_list);
             });
         }
         // CONNECTORS
-        public void SetConnectorProperties(string con_props)
-        {
-            var new_props = JsonConvert.DeserializeObject<ConProps>(con_props);
+        public void SetConnectorProperties (string con_props) {
+            var new_props = JsonConvert.DeserializeObject<ConProps> (con_props);
 
-
-            foreach (BloodConnector bc in currentModel.modelDefinition.blood_connectors)
-            {
-                if (bc.name == new_props.name)
-                {
+            foreach (BloodConnector bc in currentModel.modelDefinition.blood_connectors) {
+                if (bc.name == new_props.name) {
                     bc.is_enabled = new_props.is_enabled;
                     bc.no_backflow = new_props.no_backflow;
                     bc.res_forward_baseline = new_props.res_forward_baseline;
@@ -322,10 +278,8 @@ namespace NeonatalPhysiologyEngine.IO
                 }
             }
 
-            foreach (GasConnector gc in currentModel.modelDefinition.gas_connectors)
-            {
-                if (gc.name == new_props.name)
-                {
+            foreach (GasConnector gc in currentModel.modelDefinition.gas_connectors) {
+                if (gc.name == new_props.name) {
                     gc.is_enabled = new_props.is_enabled;
                     gc.no_backflow = new_props.no_backflow;
                     gc.res_forward_baseline = new_props.res_forward_baseline;
@@ -336,10 +290,8 @@ namespace NeonatalPhysiologyEngine.IO
                 }
             }
 
-            foreach (Valve gc in currentModel.modelDefinition.valves)
-            {
-                if (gc.name == new_props.name)
-                {
+            foreach (Valve gc in currentModel.modelDefinition.valves) {
+                if (gc.name == new_props.name) {
                     gc.is_enabled = new_props.is_enabled;
                     gc.no_backflow = new_props.no_backflow;
                     gc.res_forward_baseline = new_props.res_forward_baseline;
@@ -350,10 +302,8 @@ namespace NeonatalPhysiologyEngine.IO
                 }
             }
 
-            foreach (Shunt gc in currentModel.modelDefinition.shunts)
-            {
-                if (gc.name == new_props.name)
-                {
+            foreach (Shunt gc in currentModel.modelDefinition.shunts) {
+                if (gc.name == new_props.name) {
                     gc.is_enabled = new_props.is_enabled;
                     gc.no_backflow = new_props.no_backflow;
                     gc.res_forward_baseline = new_props.res_forward_baseline;
@@ -364,180 +314,156 @@ namespace NeonatalPhysiologyEngine.IO
                 }
             }
         }
-        public Task<string> GetConnectorDataAsync(string con_name)
-        {
-            return Task.Run(() =>
-            {
+        public Task<string> GetConnectorDataAsync (string con_name) {
+            return Task.Run (() => {
 
-                foreach (BloodConnector bc in currentModel.modelDefinition.blood_connectors)
-                {
-                    if (bc.name == con_name)
-                    {
-                        return JsonConvert.SerializeObject(bc);
+                foreach (BloodConnector bc in currentModel.modelDefinition.blood_connectors) {
+                    if (bc.name == con_name) {
+                        return JsonConvert.SerializeObject (bc);
 
                     }
                 }
 
-                foreach (GasConnector gc in currentModel.modelDefinition.gas_connectors)
-                {
-                    if (gc.name == con_name)
-                    {
-                        return JsonConvert.SerializeObject(gc);
+                foreach (GasConnector gc in currentModel.modelDefinition.gas_connectors) {
+                    if (gc.name == con_name) {
+                        return JsonConvert.SerializeObject (gc);
 
                     }
                 }
 
-                foreach (Valve valve in currentModel.modelDefinition.valves)
-                {
-                    if (valve.name == con_name)
-                    {
-                        return JsonConvert.SerializeObject(valve);
+                foreach (Valve valve in currentModel.modelDefinition.valves) {
+                    if (valve.name == con_name) {
+                        return JsonConvert.SerializeObject (valve);
 
                     }
                 }
 
-                foreach (Shunt shunt in currentModel.modelDefinition.shunts)
-                {
-                    if (shunt.name == con_name)
-                    {
-                        return JsonConvert.SerializeObject(shunt);
+                foreach (Shunt shunt in currentModel.modelDefinition.shunts) {
+                    if (shunt.name == con_name) {
+                        return JsonConvert.SerializeObject (shunt);
 
                     }
                 }
 
                 return "";
 
-
             });
         }
-        public Task<string> GetConnectorNameListAsync(int con_type)
-        {
-            return Task.Run(() =>
-            {
-                List<string> con_list = new List<string>();
+        public Task<string> GetConnectorNameListAsync (int con_type) {
+            return Task.Run (() => {
+                List<string> con_list = new List<string> ();
 
-
-                foreach (BloodConnector bc in currentModel.modelDefinition.blood_connectors)
-                {
-                    con_list.Add(bc.name);
+                foreach (BloodConnector bc in currentModel.modelDefinition.blood_connectors) {
+                    con_list.Add (bc.name);
                 }
 
-                foreach (GasConnector gc in currentModel.modelDefinition.gas_connectors)
-                {
-                    con_list.Add(gc.name);
+                foreach (GasConnector gc in currentModel.modelDefinition.gas_connectors) {
+                    con_list.Add (gc.name);
                 }
 
-                foreach (Valve gc in currentModel.modelDefinition.valves)
-                {
-                    con_list.Add(gc.name);
+                foreach (Valve gc in currentModel.modelDefinition.valves) {
+                    con_list.Add (gc.name);
                 }
 
-                foreach (Shunt gc in currentModel.modelDefinition.shunts)
-                {
-                    con_list.Add(gc.name);
+                foreach (Shunt gc in currentModel.modelDefinition.shunts) {
+                    con_list.Add (gc.name);
                 }
 
-
-                return JsonConvert.SerializeObject(con_list);
+                return JsonConvert.SerializeObject (con_list);
             });
         }
         // MODEL STATE
-        public Task<string> GetModelStateAsync()
-        {
-            return Task.Run(() =>
-            {
-                Dictionary<string, double[]> _data = new Dictionary<string, double[]>();
+        public Task<string> GetModelStateAsync () {
+            return Task.Run (() => {
+                Dictionary<string, double[]> _data = new Dictionary<string, double[]> ();
 
                 // monitor signals
-                _data.Add("heart_rate", new double[] { Math.Round(currentModel.modelDefinition.ecg["heart_rate"], 0) });
+                _data.Add ("heart_rate", new double[] { Math.Round (currentModel.modelDefinition.ecg["heart_rate"], 0) });
 
-                _data.Add("ecg_signal", new double[] { currentModel.modelDefinition.ecg["ecg_signal"] });
+                _data.Add ("ecg_signal", new double[] { currentModel.modelDefinition.ecg["ecg_signal"] });
 
-                _data.Add("abp_systole", new double[] { Math.Round(currentModel.dataCollector.abp_systole, 1) });
+                _data.Add ("abp_systole", new double[] { Math.Round (currentModel.dataCollector.abp_systole, 1) });
 
-                _data.Add("abp_diastole", new double[] { Math.Round(currentModel.dataCollector.abp_diastole, 1) });
+                _data.Add ("abp_diastole", new double[] { Math.Round (currentModel.dataCollector.abp_diastole, 1) });
 
-                _data.Add("pap_systole", new double[] { Math.Round(currentModel.dataCollector.pap_systole, 1) });
+                _data.Add ("pap_systole", new double[] { Math.Round (currentModel.dataCollector.pap_systole, 1) });
 
-                _data.Add("pap_diastole", new double[] { Math.Round(currentModel.dataCollector.pap_diastole, 1) });
+                _data.Add ("pap_diastole", new double[] { Math.Round (currentModel.dataCollector.pap_diastole, 1) });
 
-                _data.Add("et_co2", new double[] { Math.Round(currentModel.dataCollector.et_co2, 1) });
+                _data.Add ("et_co2", new double[] { Math.Round (currentModel.dataCollector.et_co2, 1) });
 
-                _data.Add("spo2_pre", new double[] { Math.Round(currentModel.dataCollector.spo2_pre, 2) });
+                _data.Add ("spo2_pre", new double[] { Math.Round (currentModel.dataCollector.spo2_pre, 2) });
 
-                _data.Add("spo2_post", new double[] { Math.Round(currentModel.dataCollector.spo2_post, 2) });
+                _data.Add ("spo2_post", new double[] { Math.Round (currentModel.dataCollector.spo2_post, 2) });
 
-                _data.Add("resp_rate", new double[] { Math.Round(currentModel.dataCollector.resp_rate, 1) });
+                _data.Add ("resp_rate", new double[] { Math.Round (currentModel.dataCollector.resp_rate, 1) });
 
-                _data.Add("temp", new double[] { Math.Round(currentModel.modelDefinition.metabolism["body_temp"], 1) });
+                _data.Add ("temp", new double[] { Math.Round (currentModel.modelDefinition.metabolism["body_temp"], 1) });
 
-                _data.Add("art_ph", new double[] { Math.Round(currentModel.dataCollector.art_ph, 2) });
+                _data.Add ("art_ph", new double[] { Math.Round (currentModel.dataCollector.art_ph, 2) });
 
-                _data.Add("art_po2", new double[] { Math.Round(currentModel.dataCollector.art_po2, 1) });
+                _data.Add ("art_po2", new double[] { Math.Round (currentModel.dataCollector.art_po2, 1) });
 
-                _data.Add("art_pco2", new double[] { Math.Round(currentModel.dataCollector.art_pco2, 1) });
+                _data.Add ("art_pco2", new double[] { Math.Round (currentModel.dataCollector.art_pco2, 1) });
 
-                _data.Add("art_hco3", new double[] { Math.Round(currentModel.dataCollector.art_hco3, 0) });
+                _data.Add ("art_hco3", new double[] { Math.Round (currentModel.dataCollector.art_hco3, 0) });
 
-                _data.Add("art_be", new double[] { Math.Round(currentModel.dataCollector.art_be, 1) });
+                _data.Add ("art_be", new double[] { Math.Round (currentModel.dataCollector.art_be, 1) });
 
-                _data.Add("art_lactate", new double[] { Math.Round(currentModel.dataCollector.art_lactate, 1) });
+                _data.Add ("art_lactate", new double[] { Math.Round (currentModel.dataCollector.art_lactate, 1) });
 
                 // blood compartment signals
-                foreach (BloodCompartment bc in currentModel.modelDefinition.blood_compartments)
-                {
-                    double[] newValue_bc = { Math.Round(bc.vol_current, 2), Math.Round(bc.pres_current, 2), Math.Round(bc.to2, 2) };
-                    _data.Add(bc.name, newValue_bc);
+                foreach (BloodCompartment bc in currentModel.modelDefinition.blood_compartments) {
+                    double[] newValue_bc = { Math.Round (bc.vol_current, 2), Math.Round (bc.pres_current, 2), Math.Round (bc.to2, 2) };
+                    _data.Add (bc.name, newValue_bc);
 
-                    if (bc.name == "LV" || bc.name == "RV" || bc.name == "LA" || bc.name == "RA")
-                    {
-                        _data.Add(bc.name + "_p", bc.pressures);
-                        _data.Add(bc.name + "_v", bc.volumes);
+                    if (bc.name == "LV" || bc.name == "RV" || bc.name == "LA" || bc.name == "RA") {
+                        _data.Add (bc.name + "_p", bc.pressures);
+                        _data.Add (bc.name + "_v", bc.volumes);
                     }
 
                 }
-                foreach (GasCompartment gc in currentModel.modelDefinition.gas_compartments)
-                {
-                    double[] newValue_gc = { Math.Round(gc.vol_current, 2), Math.Round(gc.to2, 2), Math.Round(gc.pco2, 2) };
-                    _data.Add(gc.name, newValue_gc);
+                foreach (GasCompartment gc in currentModel.modelDefinition.gas_compartments) {
+                    double[] newValue_gc = { Math.Round (gc.vol_current, 2), Math.Round (gc.to2, 2), Math.Round (gc.pco2, 2) };
+                    _data.Add (gc.name, newValue_gc);
 
-                    if (gc.name == "ALL" || gc.name == "ALR" || gc.name == "NCA")
-                    {
-                        _data.Add(gc.name + "_p", gc.pressures);
-                        _data.Add(gc.name + "_v", gc.volumes);
+                    if (gc.name == "ALL" || gc.name == "ALR" || gc.name == "NCA") {
+                        _data.Add (gc.name + "_p", gc.pressures);
+                        _data.Add (gc.name + "_v", gc.volumes);
                     }
                 }
 
-                foreach (BloodConnector bcc in currentModel.modelDefinition.blood_connectors)
-                {
-                    double[] newValue_bcc = { Math.Round(bcc.real_flow, 2) };
-                    _data.Add(bcc.name, newValue_bcc);
+                foreach (BloodConnector bcc in currentModel.modelDefinition.blood_connectors) {
+                    double[] newValue_bcc = { Math.Round (bcc.real_flow, 2) };
+                    _data.Add (bcc.name, newValue_bcc);
                 }
-                foreach (Valve valve in currentModel.modelDefinition.valves)
-                {
-                    double[] newValue_valve = { Math.Round(valve.real_flow, 2) };
-                    _data.Add(valve.name, newValue_valve);
+                foreach (Valve valve in currentModel.modelDefinition.valves) {
+                    double[] newValue_valve = { Math.Round (valve.real_flow, 2) };
+                    _data.Add (valve.name, newValue_valve);
                 }
-                foreach (Shunt shunt in currentModel.modelDefinition.shunts)
-                {
-                    double[] newValue_shunt = { Math.Round(shunt.real_flow, 2) };
-                    _data.Add(shunt.name, newValue_shunt);
+                foreach (Shunt shunt in currentModel.modelDefinition.shunts) {
+                    double[] newValue_shunt = { Math.Round (shunt.real_flow, 2) };
+                    _data.Add (shunt.name, newValue_shunt);
                 }
-                foreach (GasConnector gcc in currentModel.modelDefinition.gas_connectors)
-                {
-                    double[] newValue_gcc = { Math.Round(gcc.real_flow, 2) };
-                    _data.Add(gcc.name, newValue_gcc);
+                foreach (GasConnector gcc in currentModel.modelDefinition.gas_connectors) {
+                    double[] newValue_gcc = { Math.Round (gcc.real_flow, 2) };
+                    _data.Add (gcc.name, newValue_gcc);
                 }
 
-                return JsonConvert.SerializeObject(_data);
+                return JsonConvert.SerializeObject (_data);
+            });
+        }
+
+        public Task<string> GetModelDefinitionAsync (string data) {
+            return Task.Run (() => {
+                return JsonConvert.SerializeObject (currentModel.modelDefinition);
             });
         }
 
     }
 
-// property classes
-    class ConProps
-    {
+    // property classes
+    class ConProps {
         public string name = "";
         public int is_enabled = 1;
         public string comp1 = "";
@@ -549,11 +475,8 @@ namespace NeonatalPhysiologyEngine.IO
         public double in_k1 = 0;
         public double in_k2 = 0;
 
-
-
     }
-    class CompProps
-    {
+    class CompProps {
         public string name = "";
         public int is_enabled = 1;
         public int comp_type = 0;
@@ -567,10 +490,8 @@ namespace NeonatalPhysiologyEngine.IO
         public double el_k2 = 1;
         public double fvatp = 0;
 
-
     }
-    class ECGProps
-    {
+    class ECGProps {
         public double heart_rate = 0;
         public double heart_rate_ref = 0;
         public double rhythm_type = 0;
@@ -586,7 +507,7 @@ namespace NeonatalPhysiologyEngine.IO
         public double width_t = 0;
 
     }
-    class GetMetabolismProps{
+    class GetMetabolismProps {
         public double atp_need = 0;
         public double resp_q = 0;
         public double p_atm = 0;
@@ -595,7 +516,7 @@ namespace NeonatalPhysiologyEngine.IO
         public double hemoglobin = 0;
 
     }
-    class BreathingProps{
+    class BreathingProps {
         public double spont_breathing_enabled = 1;
         public double spont_resp_rate = 1;
         public double ref_minute_volume = 1;
@@ -606,7 +527,7 @@ namespace NeonatalPhysiologyEngine.IO
         public double resp_muscle_pressure = 1;
 
     }
-    class VentilatorProps{
+    class VentilatorProps {
         public double ventilator_enabled = 0;
         public double volume_controlled = 0;
         public double target_tidal_volume = 0;
@@ -657,7 +578,6 @@ namespace NeonatalPhysiologyEngine.IO
         public double g_map_hp = 0;
         public double g_lungvol_hp = 0;
         public double lung_vol_hp_threshold = 0;
-
 
     }
 }
